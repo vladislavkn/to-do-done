@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import AppLoading from "expo-app-loading";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import {
   useFonts,
   Montserrat_500Medium,
@@ -11,6 +11,8 @@ import {
 } from "@expo-google-fonts/montserrat";
 import Navigation from "./src/components/Navigation";
 import TodayTodoListPage from "./src/pages/TodayTodoListPage";
+import Menu from "./src/components/Menu";
+import Overlay from "./src/components/Overlay";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -27,7 +29,11 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar style="dark" />
       <Navigation />
-      <TodayTodoListPage />
+      <ScrollView style={styles.page}>
+        <TodayTodoListPage />
+      </ScrollView>
+      <Overlay />
+      <Menu />
     </View>
   );
 }
@@ -37,5 +43,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingTop: Constants.statusBarHeight,
+  },
+  page: {
+    flexGrow: 1,
   },
 });

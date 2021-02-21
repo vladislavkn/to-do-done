@@ -1,3 +1,10 @@
+import "react-native-get-random-values";
+import { nanoid } from "nanoid";
+import rfds from "rfdc";
+
+export const copy = rfds();
+export const generateId = () => nanoid();
+
 export const getFormattedDate = (): string => {
   const currentDate = new Date();
   const currentDay = currentDate.getDate();

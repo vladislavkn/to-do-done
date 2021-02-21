@@ -1,43 +1,25 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableNativeFeedback } from "react-native";
+import { Todo } from "../types";
 import Icon from "./Icon";
 
-export type todoItem = {
-  title: string;
-  duration: number;
-  from: number;
-  to: number;
-  done: boolean;
-  id: string;
-  time: string;
-};
-
-type TodoListItemProps = {
-  onChange: (value: boolean) => void;
+interface TodoListItemProps {
+  onPress: () => void;
   onLongPress: () => void;
-  title: string;
-  done: boolean;
-  time: string;
-};
+  todo: Todo;
+}
 
-const TodoListItem: React.FC<TodoListItemProps> = ({
-  onChange,
-  title,
-  time,
-  done,
-  onLongPress,
-}) => (
-  <TouchableNativeFeedback
-    onPress={() => onChange(!done)}
-    onLongPress={onLongPress}
-  >
+const TodoListItem = ({ onPress, onLongPress, todo }: TodoListItemProps) => (
+  <TouchableNativeFeedback onPress={onPress} onLongPress={onLongPress}>
     <View style={styles.container}>
       <View style={styles.button}>
-        <Icon name={done ? "done" : "undone"} width={24} height={24} />
+        <Icon name={todo.done ? "done" : "undone"} width={24} height={24} />
       </View>
       <View>
-        <Text style={[styles.title, done && styles.done]}>{title}</Text>
-        <Text style={styles.subtitle}>{time}</Text>
+        <Text style={[styles.title, todo.done && styles.done]}>
+          {todo.title}
+        </Text>
+        {todo.time ? <Text style={styles.subtitle}>{todo.time}</Text> : null}
       </View>
     </View>
   </TouchableNativeFeedback>
