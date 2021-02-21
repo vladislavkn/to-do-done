@@ -1,14 +1,26 @@
 import React from "react";
 import TodoList from "../components/TodoList";
-import { useDailyTodos } from "../store/dailyTodos";
+import useStore from "../store";
+import { Todo } from "../types";
 
 const TodayTodoListPage = () => {
-  const todos = useDailyTodos((store) => store.todos);
-  const editTodo = useDailyTodos((store) => store.editTodo);
-  const removeTodo = useDailyTodos((store) => store.removeTodo);
+  const todos = useStore((store) =>
+    store.todos.filter((t) => t.category === "daily")
+  );
+  const updateTodo = useStore((store) => store.updateTodo);
+  const removeTodo = useStore((store) => store.removeTodo);
+
+  const onItemPress = (todo: Todo) => {
+    todo.done = !todo.done;
+    updateTodo(todo);
+  };
 
   return (
-    <TodoList items={todos} onChange={editTodo} onItemLongPress={removeTodo} />
+    <TodoList
+      items={todos}
+      onItemPress={onItemPress}
+      onItemLongPress={removeTodo}
+    />
   );
 };
 
