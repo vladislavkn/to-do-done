@@ -2,6 +2,10 @@ import { icons } from "./icons";
 
 export type IconName = keyof typeof icons;
 
+export type ArrayElement<
+  ArrayType extends readonly unknown[]
+> = ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+
 export type StringKeyedObjext = {
   [key: string]: any;
 };
@@ -9,8 +13,8 @@ export type StringKeyedObjext = {
 type OverlayData = {
   closeOverlay: () => void;
   setPayload: State["setOverlayPayload"];
-  text?: string;
-  payload?: StringKeyedObjext;
+  text: string;
+  payload: StringKeyedObjext;
 };
 
 export type OverlayCallback = (data: OverlayData) => void;
@@ -31,6 +35,7 @@ export type Overlay = {
       fn: OverlayCallback;
     }[];
   }[];
+  initialText?: string;
 };
 
 export type State = {
@@ -42,15 +47,20 @@ export type State = {
   closeOverlay: () => void;
   updateTodo: (todo: Todo) => void;
   removeTodo: (todo: Todo) => void;
-  addTodo: (todo: Partial<Todo>) => void;
+  addTodo: (todo: Todo) => void;
 };
 
 export type Todo = {
   title: string;
   done: boolean;
   id: string;
-  from?: number;
-  duration?: number;
-  category?: string;
-  time?: string;
+  from: number;
+  duration: number;
+  category: string;
+  time: string;
+};
+
+export type Duration = {
+  hours: number;
+  minutes: number;
 };

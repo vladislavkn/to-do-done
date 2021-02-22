@@ -1,5 +1,7 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
+import { Overlay, OverlayCallback, State, Todo, ArrayElement } from "./types";
+import { endTimeSelector } from "./store";
 
 export const generateId = () => nanoid();
 
@@ -32,3 +34,124 @@ export const getFormattedDate = (): string => {
 
   return `${currentDay} of ${currentMonth}, ${currentWeekday}`;
 };
+
+const secToMs = (seconds: number) => seconds * 1000;
+const msToSec = (milliseconds: number) => milliseconds / 1000;
+const minsToMs = (mins: number) => secToMs(mins * 60);
+
+const formatDuration = (duration: number) => {
+  const durationHours = Math.floor(msToSec(duration) / 3600),
+    durationMinutes = Math.floor((msToSec(duration) % 3600) / 60);
+  return `${durationHours > 0 ? `${durationHours}h` : ""}${
+    durationMinutes > 0 ? ` ${durationMinutes} min` : ""
+  }`;
+};
+
+const formatTime = (from: number, duratuion: number) => {
+  const fromDate = new Date(from),
+    toDate = new Date(from + duratuion),
+    fromHours = fromDate.getHours(),
+    fromMinutes = fromDate.getMinutes(),
+    toHours = toDate.getHours(),
+    toMinutes = toDate.getMinutes();
+
+  return `${formatDuration(duratuion)} | ${fromHours}:${
+    fromMinutes < 10 ? "0" : ""
+  }${fromMinutes}-${toHours}:${toMinutes < 10 ? "0" : ""}${toMinutes}`;
+};
+
+const createTodo = (todo: Partial<Todo>, state: State) => {
+  const endTime = endTimeSelector(state);
+  const newTodo = {
+    done: false,
+    duration: 0,
+    category: "daily",
+    id: generateId(),
+    from: endTime,
+    ...todo,
+  } as Todo;
+  if (newTodo.duration !== 0)
+    newTodo.time = formatTime(newTodo.from, newTodo.duration);
+
+  state.addTodo(newTodo);
+};
+
+const timeButtonGroup: ArrayElement<Overlay["buttonsGroups"]> = {
+  selectable: true,
+  buttons: [5, 10, 20, 30, 40, 60, 70, 80, 90, 120, 180].map((num) => ({
+    buttonText: formatDuration(minsToMs(num)),
+    fn: ({ setPayload }) => setPayload({ duration: minsToMs(num) }),
+  })),
+};
+
+export const showCreateTodoOverlay = (state: State, category = "daily") => {
+  state.openOverlay({
+    placeholder: "New todo",
+    submit({ text, payload, closeOverlay }) {
+      if (text.length > 0) {
+        createTodo(
+          {
+            title: text,
+            duration: payload?.duration ?? 0,
+            category,
+          },
+          state
+        );
+        closeOverlay();
+      }
+    },
+    buttonsGroups: [timeButtonGroup],
+  });
+};
+
+export const showEditTodoOverlay = (todo: Todo, state: State) => {
+  state.openOverlay({
+    placeholder: "Todo text",
+    initialText: todo.title,
+    submit({ text, payload, closeOverlay }) {
+      if (text.length > 0) {
+        todo.title = text;
+        if (payload.duration) todo.duration = payload.duration;
+        state.updateTodo(todo);
+        closeOverlay();
+      }
+    },
+    buttonsGroups: [
+      timeButtonGroup,
+      {
+        selectable: false,
+        buttons: [
+          {
+            buttonText: "Delete",
+            iconProps: {
+              name: "delete",
+              width: 10,
+              height: 12,
+            },
+            fn({ closeOverlay }) {
+              state.removeTodo(todo);
+              closeOverlay();
+            },
+          },
+          {
+            buttonText: "Toggle",
+            iconProps: {
+              name: "doneSmall",
+              width: 16,
+              height: 12,
+            },
+            fn({ closeOverlay }) {
+              todo.done = !todo.done;
+              state.updateTodo(todo);
+              closeOverlay();
+            },
+          },
+        ],
+      },
+    ],
+  });
+};
+
+// const showSelectTimeOverlay = (cb: (time: number) => void, state:State) => state.openOverlay({
+
+// })

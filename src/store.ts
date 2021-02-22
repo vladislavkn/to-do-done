@@ -69,15 +69,7 @@ const useStore = create<State>((set) => ({
   removeTodo: (todo) =>
     set((state) => ({ todos: state.todos.filter((t) => t.id !== todo.id) })),
   addTodo: (todo) =>
-    set((state) => {
-      todo.category = "daily";
-      todo.done = false;
-      todo.duration = 10000;
-      todo.from = 1000;
-      todo.id = generateId();
-      todo.time = "1h 30min | 15:30-16:00";
-      return { todos: [...state.todos, todo as Todo] };
-    }),
+    set((state) => ({ todos: [...state.todos, todo as Todo] })),
 }));
 
 export const hasOverlaysSelector = (state: State): boolean =>
@@ -86,5 +78,19 @@ export const currentOverlaySelector = (state: State) =>
   state.overlays[state.overlays.length - 1];
 export const categorizedTodosSelector = (category: string) => (state: State) =>
   state.todos.filter((t) => t?.category === category);
+export const sortedCategorizedTodosSelector = (category: string) => (
+  state: State
+) =>
+  categorizedTodosSelector(category)(state).sort(
+    (a: Todo, b: Todo) => a.from - b.from
+  );
+export const endTimeSelector = (state: State) => {
+  const todos = categorizedTodosSelector("daily")(state);
+
+  if (todos.length === 0) return Date.now();
+  const lastTodo = todos[todos.length - 1];
+
+  return lastTodo.from + lastTodo.duration;
+};
 
 export default useStore;

@@ -2,11 +2,12 @@ import React from "react";
 import TodoList from "../components/TodoList";
 import useStore, { categorizedTodosSelector } from "../store";
 import { Todo } from "../types";
+import { showEditTodoOverlay } from "../utils";
 
 const TodayTodoListPage = () => {
+  const state = useStore();
   const todos = useStore(categorizedTodosSelector("daily"));
   const updateTodo = useStore((store) => store.updateTodo);
-  const removeTodo = useStore((store) => store.removeTodo);
 
   const onItemPress = (todo: Todo) => {
     todo.done = !todo.done;
@@ -17,7 +18,7 @@ const TodayTodoListPage = () => {
     <TodoList
       items={todos}
       onItemPress={onItemPress}
-      onItemLongPress={removeTodo}
+      onItemLongPress={(todo) => showEditTodoOverlay(todo, state)}
     />
   );
 };

@@ -20,4 +20,11 @@ export const icons = {
   add: `<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M12 6.85714H6.85714V12H5.14286V6.85714H0V5.14286H5.14286V0H6.85714V5.14286H12V6.85714Z" fill="#999999"/>
   </svg>`,
+  delete: `<svg viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M6.33333 0H3L2.33333 0.666667H0V2H9.33333V0.666667H7L6.33333 0ZM7.33339 4V10.6667H2.00006V4H7.33339ZM0.666687 2.66667H8.66669V10.6667C8.66669 11.4 8.06669 12 7.33335 12H2.00002C1.26669 12 0.666687 11.4 0.666687 10.6667V2.66667Z" fill="#999999"/>
+  </svg>`,
+  doneSmall: `<svg viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6.09091 10.4925L2.27273 6.73134L1 7.98508L6.09091 13L17 2.25373L15.7273 1L6.09091 10.4925Z" fill="#999999" stroke="#999999"/>
+  </svg>
+  `,
 };

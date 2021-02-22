@@ -37,8 +37,8 @@ const Overlay = () => {
   const [text, setText] = useState<string>("");
 
   useEffect(() => {
-    if (text.length > 0) setText("");
-    if (Object.keys(selectedButtons).length === 0) setSelectedButtons({});
+    setText(overlay?.initialText ?? "");
+    setSelectedButtons({});
   }, [overlay?.id]);
 
   const handleCallback = (fn: OverlayCallback) =>
@@ -81,6 +81,8 @@ const Overlay = () => {
             <ScrollView
               contentContainerStyle={styles.group}
               key={groupIndex}
+              keyboardShouldPersistTaps="always"
+              showsHorizontalScrollIndicator={false}
               horizontal
             >
               {group.buttons.map(
@@ -152,7 +154,6 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   group: {
-    width: "100%",
     paddingLeft: 16,
     marginBottom: 16,
     justifyContent: "flex-end",

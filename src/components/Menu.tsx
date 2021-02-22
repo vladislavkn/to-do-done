@@ -2,45 +2,18 @@ import React from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import useStore from "../store";
 import { OverlayCallback } from "../types";
+import { showCreateTodoOverlay } from "../utils";
 import Icon from "./Icon";
 
 const Menu = () => {
-  const openOverlay = useStore((state) => state.openOverlay);
-  const addTodo = useStore((state) => state.addTodo);
-  const createTodo: OverlayCallback = ({ closeOverlay, text }) => {
-    if (text && text.length > 0) {
-      addTodo({ title: text });
-      closeOverlay();
-    }
-  };
-  const showTodoOverlay = () =>
-    openOverlay({
-      placeholder: "New todo",
-      submit: createTodo,
-      buttonsGroups: [
-        {
-          selectable: false,
-          buttons: [
-            {
-              buttonText: "Add",
-              iconProps: {
-                name: "add",
-                width: 16,
-                height: 16,
-              },
-              fn: createTodo,
-            },
-          ],
-        },
-      ],
-    });
+  const state = useStore();
 
   return (
     <View style={styles.container}>
       <Icon name="dailyDisabled" width={24} height={24} />
       <Icon
         style={styles.button}
-        onPress={showTodoOverlay}
+        onPress={() => showCreateTodoOverlay(state)}
         name="create"
         width={56}
         height={56}
