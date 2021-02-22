@@ -1,6 +1,6 @@
 import create from "zustand";
-import { State, Overlay } from "../types";
-import { generateId } from "../utils";
+import { State, Overlay, Todo } from "./types";
+import { generateId } from "./utils";
 
 const useStore = create<State>((set) => ({
   todos: [
@@ -37,6 +37,7 @@ const useStore = create<State>((set) => ({
   openOverlay: (overlay) =>
     set((state) => {
       overlay.id = generateId();
+      overlay.payload = {};
       return {
         overlays: [...state.overlays, overlay as Overlay],
       };
@@ -48,12 +49,42 @@ const useStore = create<State>((set) => ({
           ? state.overlays.slice(0, -1)
           : state.overlays,
     })),
+  setOverlayPayload: (payload) =>
+    set((state) => {
+      const overlay = currentOverlaySelector(state);
+      overlay.payload = {
+        ...overlay.payload,
+        ...payload,
+      } as Overlay["payload"];
+      return {
+        overlays: state.overlays.map((o) =>
+          o.id === overlay.id ? overlay : o
+        ),
+      };
+    }),
   updateTodo: (todo) =>
     set((state) => ({
       todos: state.todos.map((t) => (t.id === todo.id ? todo : t)),
     })),
   removeTodo: (todo) =>
     set((state) => ({ todos: state.todos.filter((t) => t.id !== todo.id) })),
+  addTodo: (todo) =>
+    set((state) => {
+      todo.category = "daily";
+      todo.done = false;
+      todo.duration = 10000;
+      todo.from = 1000;
+      todo.id = generateId();
+      todo.time = "1h 30min | 15:30-16:00";
+      return { todos: [...state.todos, todo as Todo] };
+    }),
 }));
+
+export const hasOverlaysSelector = (state: State): boolean =>
+  state.overlays.length > 0;
+export const currentOverlaySelector = (state: State) =>
+  state.overlays[state.overlays.length - 1];
+export const categorizedTodosSelector = (category: string) => (state: State) =>
+  state.todos.filter((t) => t?.category === category);
 
 export default useStore;

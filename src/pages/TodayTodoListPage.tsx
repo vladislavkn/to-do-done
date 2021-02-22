@@ -1,12 +1,10 @@
 import React from "react";
 import TodoList from "../components/TodoList";
-import useStore from "../store";
+import useStore, { categorizedTodosSelector } from "../store";
 import { Todo } from "../types";
 
 const TodayTodoListPage = () => {
-  const todos = useStore((store) =>
-    store.todos.filter((t) => t.category === "daily")
-  );
+  const todos = useStore(categorizedTodosSelector("daily"));
   const updateTodo = useStore((store) => store.updateTodo);
   const removeTodo = useStore((store) => store.removeTodo);
 

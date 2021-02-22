@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,37 +8,107 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from "react-native";
-import useStore from "../store";
+import useStore, {
+  currentOverlaySelector,
+  hasOverlaysSelector,
+} from "../store";
+import { OverlayCallback } from "../types";
+import Icon from "./Icon";
+
+type HandleButtonPressArgs = {
+  buttonText: string;
+  groupIndex: number;
+  fn: OverlayCallback;
+};
+
+type SelectedButtonState = {
+  [key: number]: string;
+};
 
 const Overlay = () => {
-  const hasOverlays = useStore((state) => state.overlays.length > 0);
+  const hasOverlays = useStore(hasOverlaysSelector);
+  const overlay = useStore(currentOverlaySelector);
+  const setOverlayPayload = useStore((state) => state.setOverlayPayload);
   const closeOverlay = useStore((state) => state.closeOverlay);
-  const overlay = useStore(
-    (state) => state.overlays[state.overlays.length - 1]
+
+  const [selectedButtons, setSelectedButtons] = useState<SelectedButtonState>(
+    {}
   );
-  const [text, setText] = useState("");
+  const [text, setText] = useState<string>("");
+
+  useEffect(() => {
+    if (text.length > 0) setText("");
+    if (Object.keys(selectedButtons).length === 0) setSelectedButtons({});
+  }, [overlay?.id]);
+
+  const handleCallback = (fn: OverlayCallback) =>
+    fn({
+      text,
+      payload: overlay?.payload,
+      setPayload: setOverlayPayload,
+      closeOverlay,
+    });
+
+  const handleButtonPress = (args: HandleButtonPressArgs) => {
+    const { buttonText, groupIndex, fn } = args;
+
+    if (overlay.buttonsGroups[groupIndex].selectable) {
+      setSelectedButtons((prevState) => ({
+        [groupIndex]: prevState[groupIndex] === buttonText ? "" : buttonText,
+      }));
+    }
+
+    handleCallback(fn);
+  };
 
   return hasOverlays ? (
-    <TouchableWithoutFeedback onPress={closeOverlay}>
+    <TouchableWithoutFeedback
+      onPress={(e) => e.target === e.currentTarget && closeOverlay()}
+    >
       <View style={styles.backdrop}>
         <View style={styles.container}>
           <TextInput
             style={styles.input}
             value={text}
             onChangeText={setText}
+            onSubmitEditing={() => handleCallback(overlay.submit)}
             placeholder={overlay.placeholder}
+            autoFocus
             placeholderTextColor="#999"
             selectionColor="rgba(85,85,85,0.2)"
           />
-          {overlay.buttonsGroups.map((group, index) => (
-            <ScrollView style={styles.group} key={index} horizontal>
-              {Object.entries(group).map(([buttonText, fn]) => (
-                <View key={buttonText} style={styles.button}>
-                  <TouchableNativeFeedback onPress={() => fn({ text })}>
-                    <Text style={styles.buttonText}>{buttonText}</Text>
+          {overlay.buttonsGroups.map((group, groupIndex) => (
+            <ScrollView
+              contentContainerStyle={styles.group}
+              key={groupIndex}
+              horizontal
+            >
+              {group.buttons.map(
+                ({ buttonText, iconProps = null, fn }, buttonIndex) => (
+                  <TouchableNativeFeedback
+                    key={buttonText}
+                    onPress={() =>
+                      handleButtonPress({ buttonText, groupIndex, fn })
+                    }
+                  >
+                    <View
+                      style={[
+                        styles.button,
+                        selectedButtons[groupIndex] === buttonText &&
+                          styles.selectedButton,
+                        buttonIndex !== group.buttons.length - 1 && {
+                          marginRight: 16,
+                        },
+                      ]}
+                    >
+                      {iconProps ? (
+                        <Icon style={styles.icon} {...iconProps} />
+                      ) : null}
+                      <Text style={styles.buttonText}>{buttonText}</Text>
+                    </View>
                   </TouchableNativeFeedback>
-                </View>
-              ))}
+                )
+              )}
               <View style={{ width: 24 }}></View>
             </ScrollView>
           ))}
@@ -62,7 +132,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     paddingTop: 24,
-    paddingBottom: 16,
     borderTopRightRadius: 24,
     borderTopLeftRadius: 24,
     marginTop: 8,
@@ -83,20 +152,32 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   group: {
+    width: "100%",
     paddingLeft: 16,
     marginBottom: 16,
+    justifyContent: "flex-end",
   },
   button: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 8,
     paddingHorizontal: 16,
-    marginRight: 16,
     backgroundColor: "#F0F0F0",
     borderRadius: 16,
+    borderColor: "#f0f0f0",
+    borderWidth: 1,
+  },
+  selectedButton: {
+    borderColor: "#999",
+    borderWidth: 1,
   },
   buttonText: {
     fontSize: 14,
-    fontFamily: "Montserrat_700Bold",
+    fontFamily: "Montserrat_600SemiBold",
     color: "#999",
+  },
+  icon: {
+    marginRight: 8,
   },
 });
 

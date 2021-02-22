@@ -1,14 +1,36 @@
-type Maybe<T> = T | undefined;
+import { icons } from "./icons";
 
-type OverlayResult = {
-  text: string;
+export type IconName = keyof typeof icons;
+
+export type StringKeyedObjext = {
   [key: string]: any;
 };
+
+type OverlayData = {
+  closeOverlay: () => void;
+  setPayload: State["setOverlayPayload"];
+  text?: string;
+  payload?: StringKeyedObjext;
+};
+
+export type OverlayCallback = (data: OverlayData) => void;
 
 export type Overlay = {
   id: string;
   placeholder: string;
-  buttonsGroups: { [key: string]: (data: Maybe<OverlayResult>) => void }[];
+  payload: StringKeyedObjext;
+  submit: OverlayCallback;
+  buttonsGroups: {
+    selectable: boolean;
+    buttons: {
+      buttonText: string;
+      iconProps?: {
+        name: IconName;
+        [key: string]: any;
+      };
+      fn: OverlayCallback;
+    }[];
+  }[];
 };
 
 export type State = {
@@ -16,9 +38,11 @@ export type State = {
   overlays: Overlay[];
   categories: string[];
   openOverlay: (overlay: Partial<Overlay>) => void;
+  setOverlayPayload: (payload: Partial<Overlay["payload"]>) => void;
   closeOverlay: () => void;
   updateTodo: (todo: Todo) => void;
   removeTodo: (todo: Todo) => void;
+  addTodo: (todo: Partial<Todo>) => void;
 };
 
 export type Todo = {

@@ -1,37 +1,51 @@
 import React from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import useStore from "../store";
+import { OverlayCallback } from "../types";
 import Icon from "./Icon";
 
 const Menu = () => {
-  const openOverlay = useStore((store) => store.openOverlay);
+  const openOverlay = useStore((state) => state.openOverlay);
+  const addTodo = useStore((state) => state.addTodo);
+  const createTodo: OverlayCallback = ({ closeOverlay, text }) => {
+    if (text && text.length > 0) {
+      addTodo({ title: text });
+      closeOverlay();
+    }
+  };
   const showTodoOverlay = () =>
     openOverlay({
       placeholder: "New todo",
+      submit: createTodo,
       buttonsGroups: [
         {
-          add: (data) => alert(JSON.stringify(data)),
-        },
-        {
-          test: () => alert("Hello!"),
-          rest: () => alert("Hello!"),
-          rete: () => alert("Hello!"),
-          aersf: () => alert("Hello!"),
+          selectable: false,
+          buttons: [
+            {
+              buttonText: "Add",
+              iconProps: {
+                name: "add",
+                width: 16,
+                height: 16,
+              },
+              fn: createTodo,
+            },
+          ],
         },
       ],
     });
 
   return (
     <View style={styles.container}>
-      <Icon name="dailyDisabled" width={24} height={24}></Icon>
+      <Icon name="dailyDisabled" width={24} height={24} />
       <Icon
         style={styles.button}
         onPress={showTodoOverlay}
-        name="add"
+        name="create"
         width={56}
         height={56}
-      ></Icon>
-      <Icon name="categoriesDisabled" width={19} height={24}></Icon>
+      />
+      <Icon name="categoriesDisabled" width={19} height={24} />
     </View>
   );
 };
@@ -39,9 +53,8 @@ const Menu = () => {
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 12,
-    paddingHorizontal: 56,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     position: "relative",
     backgroundColor: "#FBFBFB",
     borderTopColor: "#CCCCCC",
