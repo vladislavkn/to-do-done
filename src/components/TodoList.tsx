@@ -1,23 +1,32 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import useStore from "../store";
 import { Todo } from "../types";
+import { showEditTodoOverlay } from "../utils";
 import TodoListItem from "./TodoListItem";
 
 type TodoListProps = {
-  items: Todo[];
-  onItemPress: (todo: Todo) => void;
-  onItemLongPress: (todo: Todo) => void;
+  todos: Todo[];
 };
 
-const TodoList: React.FC<TodoListProps> = (props: TodoListProps) => {
+const TodoList: React.FC<TodoListProps> = ({ todos }) => {
+  const state = useStore();
+
+  const handleChange = (todo: Todo) => {
+    todo.done = !todo.done;
+    state.updateTodo(todo);
+  };
+
+  const handlePress = (todo: Todo) => showEditTodoOverlay(todo, state);
+
   return (
     <View style={styles.container}>
-      {props.items.map((item) => (
+      {todos.map((todo) => (
         <TodoListItem
-          key={item.id}
-          todo={item}
-          onPress={() => props.onItemPress(item)}
-          onLongPress={() => props.onItemLongPress(item)}
+          key={todo.id}
+          todo={todo}
+          onChange={() => handleChange(todo)}
+          onPress={() => handlePress(todo)}
         />
       ))}
     </View>

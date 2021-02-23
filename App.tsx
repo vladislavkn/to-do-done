@@ -10,9 +10,11 @@ import {
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
 import Navigation from "./src/components/Navigation";
-import TodayTodoListPage from "./src/pages/TodayTodoListPage";
 import Menu from "./src/components/Menu";
 import Overlay from "./src/components/Overlay";
+import TodayTodoListPage from "./src/pages/TodayTodoListPage";
+import categorizedTodosPage from "./src/pages/CategorizedTodosPage";
+import RouterView from "./src/components/RouterView";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -30,7 +32,10 @@ export default function App() {
       <StatusBar style="dark" />
       <Navigation />
       <ScrollView style={styles.page}>
-        <TodayTodoListPage />
+        <RouterView
+          routes={{ TodayTodoListPage, categorizedTodosPage }}
+          initial="TodayTodoListPage"
+        />
       </ScrollView>
       <Overlay />
       <Menu />

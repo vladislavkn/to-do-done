@@ -1,26 +1,11 @@
 import React from "react";
 import TodoList from "../components/TodoList";
-import useStore, { categorizedTodosSelector } from "../store";
-import { Todo } from "../types";
-import { showEditTodoOverlay } from "../utils";
-
+import useStore from "../store";
+import { sortedCategorizedTodosSelector } from "../store/selectors";
 const TodayTodoListPage = () => {
-  const state = useStore();
-  const todos = useStore(categorizedTodosSelector("daily"));
-  const updateTodo = useStore((store) => store.updateTodo);
+  const todos = useStore(sortedCategorizedTodosSelector("daily"));
 
-  const onItemPress = (todo: Todo) => {
-    todo.done = !todo.done;
-    updateTodo(todo);
-  };
-
-  return (
-    <TodoList
-      items={todos}
-      onItemPress={onItemPress}
-      onItemLongPress={(todo) => showEditTodoOverlay(todo, state)}
-    />
-  );
+  return <TodoList todos={todos} />;
 };
 
 export default TodayTodoListPage;

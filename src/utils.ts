@@ -1,7 +1,7 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { Overlay, OverlayCallback, State, Todo, ArrayElement } from "./types";
-import { endTimeSelector } from "./store";
+import { Overlay, State, Todo, ArrayElement } from "./types";
+import { endTimeSelector } from "./store/selectors";
 
 export const generateId = () => nanoid();
 
@@ -48,6 +48,7 @@ const formatDuration = (duration: number) => {
 };
 
 const formatTime = (from: number, duratuion: number) => {
+  if (!!!from || !!!duratuion) return "";
   const fromDate = new Date(from),
     toDate = new Date(from + duratuion),
     fromHours = fromDate.getHours(),
@@ -70,28 +71,32 @@ const createTodo = (todo: Partial<Todo>, state: State) => {
     from: endTime,
     ...todo,
   } as Todo;
-  if (newTodo.duration !== 0)
-    newTodo.time = formatTime(newTodo.from, newTodo.duration);
+  newTodo.time = formatTime(newTodo.from, newTodo.duration);
 
   state.addTodo(newTodo);
 };
 
 const timeButtonGroup: ArrayElement<Overlay["buttonsGroups"]> = {
   selectable: true,
-  buttons: [5, 10, 20, 30, 40, 60, 70, 80, 90, 120, 180].map((num) => ({
-    buttonText: formatDuration(minsToMs(num)),
-    fn: ({ setPayload }) => setPayload({ duration: minsToMs(num) }),
-  })),
+  buttons: [5, 10, 20, 30, 40, 60, 70, 80, 90, 120, 180].map((num) => {
+    num = minsToMs(num);
+    return {
+      buttonText: formatDuration(num),
+      fn: ({ setPayload, payload }) =>
+        setPayload({ duration: payload?.duration === num ? null : num }),
+    };
+  }),
 };
 
 export const showCreateTodoOverlay = (state: State, category = "daily") => {
   state.openOverlay({
     placeholder: "New todo",
-    submit({ text, payload, closeOverlay }) {
-      if (text.length > 0) {
+    inputType: "text",
+    submit({ payload, closeOverlay }) {
+      if (payload.value.text.length > 0) {
         createTodo(
           {
-            title: text,
+            title: payload.value.text,
             duration: payload?.duration ?? 0,
             category,
           },
@@ -107,11 +112,15 @@ export const showCreateTodoOverlay = (state: State, category = "daily") => {
 export const showEditTodoOverlay = (todo: Todo, state: State) => {
   state.openOverlay({
     placeholder: "Todo text",
-    initialText: todo.title,
-    submit({ text, payload, closeOverlay }) {
-      if (text.length > 0) {
-        todo.title = text;
-        if (payload.duration) todo.duration = payload.duration;
+    initialValue: { text: todo.title },
+    inputType: "text",
+    submit({ payload, closeOverlay }) {
+      if (payload.value.text.length > 0) {
+        todo.title = payload.value.text;
+        if (payload.duration) {
+          todo.duration = payload.duration;
+          todo.time = formatTime(todo.from, todo.duration);
+        }
         state.updateTodo(todo);
         closeOverlay();
       }
@@ -121,6 +130,22 @@ export const showEditTodoOverlay = (todo: Todo, state: State) => {
       {
         selectable: false,
         buttons: [
+          {
+            buttonText: "Change time",
+            iconProps: {
+              name: "time",
+              width: 12,
+              height: 12,
+            },
+            fn({ closeOverlay }) {
+              showUpdateTimeOverlay((time) => {
+                todo.from = time;
+                todo.time = formatTime(todo.from, todo.duration);
+                state.updateTodo(todo);
+                closeOverlay();
+              }, state);
+            },
+          },
           {
             buttonText: "Delete",
             iconProps: {
@@ -133,25 +158,25 @@ export const showEditTodoOverlay = (todo: Todo, state: State) => {
               closeOverlay();
             },
           },
-          {
-            buttonText: "Toggle",
-            iconProps: {
-              name: "doneSmall",
-              width: 16,
-              height: 12,
-            },
-            fn({ closeOverlay }) {
-              todo.done = !todo.done;
-              state.updateTodo(todo);
-              closeOverlay();
-            },
-          },
         ],
       },
     ],
   });
 };
 
-// const showSelectTimeOverlay = (cb: (time: number) => void, state:State) => state.openOverlay({
-
-// })
+const showUpdateTimeOverlay = (
+  callback: (time: number) => void,
+  state: State
+) =>
+  state.openOverlay({
+    inputType: "time",
+    submit({ payload, closeOverlay }) {
+      if (payload.value.minutes.length > 0 && payload.value.hours.length > 0) {
+        const date = new Date();
+        date.setHours(parseInt(payload.value.hours));
+        date.setMinutes(parseInt(payload.value.minutes));
+        callback(date.getTime());
+        closeOverlay();
+      }
+    },
+  });

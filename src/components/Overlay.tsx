@@ -4,16 +4,22 @@ import {
   Text,
   TouchableNativeFeedback,
   StyleSheet,
-  TextInput,
   ScrollView,
   TouchableWithoutFeedback,
 } from "react-native";
-import useStore, {
+import useStore from "../store";
+import {
   currentOverlaySelector,
   hasOverlaysSelector,
-} from "../store";
-import { OverlayCallback } from "../types";
+} from "../store/selectors";
+import {
+  Overlay as OverlayType,
+  OverlayCallback,
+  StringKeyedObject,
+} from "../types";
 import Icon from "./Icon";
+import OverlayTextInput from "./OverlayTextInput";
+import OverlayTimeInput from "./OverlayTimeInput";
 
 type HandleButtonPressArgs = {
   buttonText: string;
@@ -25,26 +31,36 @@ type SelectedButtonState = {
   [key: number]: string;
 };
 
+const getInitialValue = (inputType: OverlayType["inputType"]) =>
+  inputType === "text"
+    ? { text: "" }
+    : {
+        minutes: "0",
+        hours: "0",
+      };
+
 const Overlay = () => {
   const hasOverlays = useStore(hasOverlaysSelector);
   const overlay = useStore(currentOverlaySelector);
   const setOverlayPayload = useStore((state) => state.setOverlayPayload);
   const closeOverlay = useStore((state) => state.closeOverlay);
+  const inputType = overlay?.inputType ?? "text";
 
   const [selectedButtons, setSelectedButtons] = useState<SelectedButtonState>(
     {}
   );
-  const [text, setText] = useState<string>("");
+  const [value, setValue] = useState<StringKeyedObject>(
+    getInitialValue(inputType)
+  );
 
   useEffect(() => {
-    setText(overlay?.initialText ?? "");
+    setValue(overlay?.initialValue ?? getInitialValue(inputType));
     setSelectedButtons({});
   }, [overlay?.id]);
 
   const handleCallback = (fn: OverlayCallback) =>
     fn({
-      text,
-      payload: overlay?.payload,
+      payload: { ...overlay?.payload, value },
       setPayload: setOverlayPayload,
       closeOverlay,
     });
@@ -67,17 +83,25 @@ const Overlay = () => {
     >
       <View style={styles.backdrop}>
         <View style={styles.container}>
-          <TextInput
-            style={styles.input}
-            value={text}
-            onChangeText={setText}
-            onSubmitEditing={() => handleCallback(overlay.submit)}
-            placeholder={overlay.placeholder}
-            autoFocus
-            placeholderTextColor="#999"
-            selectionColor="rgba(85,85,85,0.2)"
-          />
-          {overlay.buttonsGroups.map((group, groupIndex) => (
+          {inputType === "text" ? (
+            <OverlayTextInput
+              value={value}
+              onChange={setValue}
+              onSubmitEditing={() => handleCallback(overlay.submit)}
+              placeholder={overlay.placeholder}
+              placeholderTextColor="#999"
+              selectionColor="rgba(85,85,85,0.2)"
+            />
+          ) : (
+            <OverlayTimeInput
+              value={value}
+              onChange={setValue}
+              onSubmitEditing={() => handleCallback(overlay.submit)}
+              placeholderTextColor="#999"
+              selectionColor="rgba(85,85,85,0.2)"
+            />
+          )}
+          {overlay?.buttonsGroups?.map((group, groupIndex) => (
             <ScrollView
               contentContainerStyle={styles.group}
               key={groupIndex}
@@ -146,13 +170,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     elevation: 7,
   },
-  input: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    fontSize: 18,
-    fontFamily: "Montserrat_500Medium",
-    color: "#555",
-  },
+
   group: {
     paddingLeft: 16,
     marginBottom: 16,

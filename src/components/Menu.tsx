@@ -1,13 +1,12 @@
 import React from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
+
 import useStore from "../store";
-import { OverlayCallback } from "../types";
 import { showCreateTodoOverlay } from "../utils";
 import Icon from "./Icon";
 
 const Menu = () => {
   const state = useStore();
-
   return (
     <View style={styles.container}>
       <Icon name="dailyDisabled" width={24} height={24} />

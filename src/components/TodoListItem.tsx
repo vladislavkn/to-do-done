@@ -1,25 +1,41 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableNativeFeedback } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Todo } from "../types";
 import Icon from "./Icon";
 
 interface TodoListItemProps {
+  onChange: () => void;
   onPress: () => void;
-  onLongPress: () => void;
   todo: Todo;
 }
 
-const TodoListItem = ({ onPress, onLongPress, todo }: TodoListItemProps) => (
-  <TouchableNativeFeedback onPress={onPress} onLongPress={onLongPress}>
+const TodoListItem = ({ onPress, onChange, todo }: TodoListItemProps) => (
+  <TouchableNativeFeedback onPress={onPress}>
     <View style={styles.container}>
-      <View style={styles.button}>
-        <Icon name={todo.done ? "done" : "undone"} width={24} height={24} />
-      </View>
+      <TouchableWithoutFeedback onPress={onChange}>
+        <View style={styles.button}>
+          <Icon name={todo.done ? "done" : "undone"} width={24} height={24} />
+        </View>
+      </TouchableWithoutFeedback>
       <View>
-        <Text style={[styles.title, todo.done && styles.done]}>
+        <Text
+          style={[
+            styles.title,
+            todo.done && styles.done,
+            todo?.time?.length > 0 && { marginBottom: 8 },
+          ]}
+        >
           {todo.title}
         </Text>
-        {todo.time ? <Text style={styles.subtitle}>{todo.time}</Text> : null}
+        {todo?.time?.length > 0 ? (
+          <Text style={styles.subtitle}>{todo.time}</Text>
+        ) : null}
       </View>
     </View>
   </TouchableNativeFeedback>
@@ -30,15 +46,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingVertical: 8,
-    paddingHorizontal: 24,
+    paddingRight: 24,
+    paddingLeft: 8,
   },
   button: {
-    marginRight: 16,
+    height: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
   },
   title: {
     fontSize: 18,
     fontFamily: "Montserrat_600SemiBold",
-    marginBottom: 8,
     color: "#555",
   },
   subtitle: {
