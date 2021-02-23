@@ -6,15 +6,14 @@ export type ArrayElement<
   ArrayType extends readonly unknown[]
 > = ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-export type StringKeyedObjext = {
+export type StringKeyedObject = {
   [key: string]: any;
 };
 
 type OverlayData = {
   closeOverlay: () => void;
   setPayload: State["setOverlayPayload"];
-  text: string;
-  payload: StringKeyedObjext;
+  payload: StringKeyedObject;
 };
 
 export type OverlayCallback = (data: OverlayData) => void;
@@ -22,8 +21,9 @@ export type OverlayCallback = (data: OverlayData) => void;
 export type Overlay = {
   id: string;
   placeholder: string;
-  payload: StringKeyedObjext;
+  payload: StringKeyedObject;
   submit: OverlayCallback;
+  inputType: "time" | "text";
   buttonsGroups: {
     selectable: boolean;
     buttons: {
@@ -35,13 +35,15 @@ export type Overlay = {
       fn: OverlayCallback;
     }[];
   }[];
-  initialText?: string;
+  initialValue?: StringKeyedObject;
 };
 
 export type State = {
   todos: Todo[];
   overlays: Overlay[];
   categories: string[];
+  screen: string;
+  navigate: (screen: string) => void;
   openOverlay: (overlay: Partial<Overlay>) => void;
   setOverlayPayload: (payload: Partial<Overlay["payload"]>) => void;
   closeOverlay: () => void;
