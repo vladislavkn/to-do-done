@@ -11,7 +11,6 @@ export type StringKeyedObject = {
 };
 
 type OverlayData = {
-  closeOverlay: () => void;
   setPayload: State["setOverlayPayload"];
   payload: StringKeyedObject;
 };
@@ -38,11 +37,18 @@ export type Overlay = {
   initialValue?: StringKeyedObject;
 };
 
+export type Category = {
+  name: string;
+  id: string;
+};
+
 export type State = {
   todos: Todo[];
   overlays: Overlay[];
-  categories: string[];
+  categories: Category[];
   screen: string;
+  selectedCategoryId: string;
+  setSelectedCategoryId: (category: Category) => void;
   navigate: (screen: string) => void;
   openOverlay: (overlay: Partial<Overlay>) => void;
   setOverlayPayload: (payload: Partial<Overlay["payload"]>) => void;
@@ -50,6 +56,9 @@ export type State = {
   updateTodo: (todo: Todo) => void;
   removeTodo: (todo: Todo) => void;
   addTodo: (todo: Todo) => void;
+  addCategory: (category: string) => void;
+  updateCategory: (category: Category) => void;
+  removeCategory: (category: Category) => void;
 };
 
 export type Todo = {
@@ -58,7 +67,7 @@ export type Todo = {
   id: string;
   from: number;
   duration: number;
-  category: string;
+  categoryId: string;
   time: string;
 };
 
