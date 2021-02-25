@@ -6,8 +6,10 @@ export const hasOverlaysSelector = (state: State): boolean =>
 export const currentOverlaySelector = (state: State) =>
   state.overlays[state.overlays.length - 1];
 
-export const categorizedTodosSelector = (category: string) => (state: State) =>
-  state.todos.filter((t) => t?.category === category);
+export const categorizedTodosSelector = (name: string) => (state: State) => {
+  const categoryId = state.categories.find((c) => c.name === name)?.id ?? "";
+  return state.todos.filter((t) => t?.categoryId === categoryId);
+};
 
 export const sortedCategorizedTodosSelector = (category: string) => (
   state: State
@@ -24,3 +26,11 @@ export const endTimeSelector = (state: State) => {
 
   return lastTodo.from + lastTodo.duration;
 };
+
+export const currentCategoryNameSelector = (state: State) =>
+  state.categories.find((c) => c.id === state.selectedCategoryId)?.name;
+
+export const selectedCategorySortedTodosSelector = (state: State) =>
+  sortedCategorizedTodosSelector(currentCategoryNameSelector(state) ?? "")(
+    state
+  );

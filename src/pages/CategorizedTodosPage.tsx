@@ -1,13 +1,28 @@
 import React, { useState } from "react";
+import Categories from "../components/Categories";
 import TodoList from "../components/TodoList";
 import useStore from "../store";
-import { sortedCategorizedTodosSelector } from "../store/selectors";
+import { selectedCategorySortedTodosSelector } from "../store/selectors";
+import { Category } from "../types";
 
-const categorizedTodosPage = () => {
-  const [category, setCategory] = useState<string>("daily");
-  const todos = useStore(sortedCategorizedTodosSelector(category));
+const CategorizedTodosPage = () => {
+  const [selectedCategoryId, setSelectedCategoryId] = useStore((state) => [
+    state.selectedCategoryId,
+    state.setSelectedCategoryId,
+  ]);
+  const categories = useStore((state) => state.categories);
+  const todos = useStore(selectedCategorySortedTodosSelector);
 
-  return <TodoList todos={todos} />;
+  return (
+    <>
+      <Categories
+        categories={categories}
+        onPress={setSelectedCategoryId}
+        chosenId={selectedCategoryId}
+      />
+      <TodoList todos={todos} />
+    </>
+  );
 };
 
-export default categorizedTodosPage;
+export default CategorizedTodosPage;

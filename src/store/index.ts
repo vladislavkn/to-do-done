@@ -6,8 +6,18 @@ import { currentOverlaySelector } from "./selectors";
 const useStore = create<State>((set) => ({
   todos: [],
   screen: "",
-  categories: ["daily"],
+  categories: [
+    {
+      id: "0",
+      name: "daily",
+    },
+  ],
   overlays: [],
+  selectedCategoryId: "0",
+  setSelectedCategoryId: (category) =>
+    set(() => ({
+      selectedCategoryId: category.id,
+    })),
   openOverlay: (overlay) =>
     set((state) => {
       overlay.id = generateId();
@@ -45,6 +55,22 @@ const useStore = create<State>((set) => ({
   addTodo: (todo) =>
     set((state) => ({ todos: [...state.todos, todo as Todo] })),
   navigate: (screen) => set(() => ({ screen })),
+  addCategory: (name) =>
+    set((state) => ({
+      categories: state.categories.some((c) => c.name === name)
+        ? state.categories
+        : [...state.categories, { name, id: generateId() }],
+    })),
+  updateCategory: (category) =>
+    set((state) => ({
+      categories: state.categories.map((c) =>
+        c.id === category.id ? category : c
+      ),
+    })),
+  removeCategory: (categry) =>
+    set((state) => ({
+      categories: state.categories.filter((c) => c.id !== categry.id),
+    })),
 }));
 
 export default useStore;

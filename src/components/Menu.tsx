@@ -1,32 +1,63 @@
 import React from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  TouchableNativeFeedback,
+} from "react-native";
 
 import useStore from "../store";
-import { showCreateTodoOverlay } from "../utils";
+import { showAddTodoOverlay } from "../overlays";
 import Icon from "./Icon";
 
 const Menu = () => {
-  const state = useStore();
+  const [navigate, screen] = useStore((state) => [
+    state.navigate,
+    state.screen,
+  ]);
+
   return (
     <View style={styles.container}>
-      <Icon name="dailyDisabled" width={24} height={24} />
+      <TouchableNativeFeedback onPress={() => navigate("TodayTodoListPage")}>
+        <View style={styles.wrapper}>
+          <Icon
+            name={
+              screen === "TodayTodoListPage" ? "dailyEnabled" : "dailyDisabled"
+            }
+            width={24}
+            height={24}
+          />
+        </View>
+      </TouchableNativeFeedback>
       <Icon
         style={styles.button}
-        onPress={() => showCreateTodoOverlay(state)}
+        onPress={showAddTodoOverlay}
         name="create"
         width={56}
         height={56}
       />
-      <Icon name="categoriesDisabled" width={19} height={24} />
+      <TouchableNativeFeedback onPress={() => navigate("CategorizedTodosPage")}>
+        <View style={styles.wrapper}>
+          <Icon
+            name={
+              screen === "CategorizedTodosPage"
+                ? "categoriesEnabled"
+                : "categoriesDisabled"
+            }
+            width={19}
+            height={24}
+          />
+        </View>
+      </TouchableNativeFeedback>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 12,
     flexDirection: "row",
-    justifyContent: "space-around",
+    paddingHorizontal: 48,
+    justifyContent: "space-between",
     position: "relative",
     backgroundColor: "#FBFBFB",
     borderTopColor: "#CCCCCC",
@@ -36,6 +67,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: (Dimensions.get("screen").width - 56) / 2,
     top: -28,
+  },
+  wrapper: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
   },
 });
 

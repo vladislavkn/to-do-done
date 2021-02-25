@@ -9,16 +9,19 @@ type RouterViewProps = {
 };
 
 const RouterView: React.FC<RouterViewProps> = ({ routes, initial }) => {
-  const screen = useStore((state) => state.screen);
-  const navigate = useStore((state) => state.navigate);
+  const [navigate, screen] = useStore((state) => [
+    state.navigate,
+    state.screen,
+  ]);
+
   useEffect(() => {
     navigate(initial);
   }, []);
 
-  const Component = useMemo(() => {
-    const ComponentPare = Object.entries(routes).find(([s]) => s === screen);
-    return ComponentPare !== undefined ? ComponentPare[1] : null;
-  }, [screen]);
+  const Component = useMemo(
+    () => (routes.hasOwnProperty(screen) ? routes[screen] : null),
+    [screen]
+  );
 
   return Component ? <Component /> : null;
 };

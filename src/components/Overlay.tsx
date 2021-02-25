@@ -42,8 +42,10 @@ const getInitialValue = (inputType: OverlayType["inputType"]) =>
 const Overlay = () => {
   const hasOverlays = useStore(hasOverlaysSelector);
   const overlay = useStore(currentOverlaySelector);
-  const setOverlayPayload = useStore((state) => state.setOverlayPayload);
-  const closeOverlay = useStore((state) => state.closeOverlay);
+  const [setOverlayPayload, closeOverlay] = useStore((state) => [
+    state.setOverlayPayload,
+    state.closeOverlay,
+  ]);
   const inputType = overlay?.inputType ?? "text";
 
   const [selectedButtons, setSelectedButtons] = useState<SelectedButtonState>(
@@ -62,7 +64,6 @@ const Overlay = () => {
     fn({
       payload: { ...overlay?.payload, value },
       setPayload: setOverlayPayload,
-      closeOverlay,
     });
 
   const handleButtonPress = (args: HandleButtonPressArgs) => {
@@ -170,7 +171,6 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     elevation: 7,
   },
-
   group: {
     paddingLeft: 16,
     marginBottom: 16,
@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
   },
   selectedButton: {
     borderColor: "#999",
-    borderWidth: 1,
   },
   buttonText: {
     fontSize: 14,

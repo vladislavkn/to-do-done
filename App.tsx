@@ -13,7 +13,7 @@ import Navigation from "./src/components/Navigation";
 import Menu from "./src/components/Menu";
 import Overlay from "./src/components/Overlay";
 import TodayTodoListPage from "./src/pages/TodayTodoListPage";
-import categorizedTodosPage from "./src/pages/CategorizedTodosPage";
+import CategorizedTodosPage from "./src/pages/CategorizedTodosPage";
 import RouterView from "./src/components/RouterView";
 
 export default function App() {
@@ -33,7 +33,7 @@ export default function App() {
       <Navigation />
       <ScrollView style={styles.page}>
         <RouterView
-          routes={{ TodayTodoListPage, categorizedTodosPage }}
+          routes={{ TodayTodoListPage, CategorizedTodosPage }}
           initial="TodayTodoListPage"
         />
       </ScrollView>
