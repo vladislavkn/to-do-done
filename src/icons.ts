@@ -33,7 +33,18 @@ export const icons = {
   <path d="M21.3333 3.16667V21.8333H2.66667V3.16667H21.3333ZM21.3333 0.5H2.66667C1.2 0.5 0 1.7 0 3.16667V21.8333C0 23.3 1.2 24.5 2.66667 24.5H21.3333C22.8 24.5 24 23.3 24 21.8333V3.16667C24 1.7 22.8 0.5 21.3333 0.5Z" fill="#555555"/>
   <path d="M14.6667 19.1666H5.33333V16.5H14.6667V19.1666ZM18.6667 13.8333H5.33333V11.1666H18.6667V13.8333ZM18.6667 8.49998H5.33333V5.83331H18.6667V8.49998Z" fill="#555555"/>
   </svg>`,
-  categoriesEnabled: `<svg width="19" height="24" viewBox="0 0 19 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  categoriesEnabled: `<svg viewBox="0 0 19 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path fill-rule="evenodd" clip-rule="evenodd" d="M2.66667 23.9999H0L0 -6.10352e-05H2.66667L2.66667 23.9999ZM8.00005 23.9999L8.00005 -6.10352e-05H5.33338L5.33338 23.9999H8.00005ZM13.3333 -6.10352e-05L13.3333 23.9999H10.6666L10.6666 -6.10352e-05H13.3333ZM18.6667 -6.10352e-05V23.9999H16L16 -6.10352e-05H18.6667Z" fill="#555555"/>
   </svg>`,
+  remove: `<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z" fill="#999999"/>
+  </svg>`,
+  move: `<svg width="28" height="24" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M6.28571 18V13.8562H11V9.14375H6.28571V5L2.38419e-07 11.5L6.28571 18Z" fill="#999999"/>
+  <rect x="9.5" y="1.5" width="17" height="21" rx="1.5" stroke="#999999" stroke-width="3"/>
+  <line x1="13" y1="11.5" x2="23" y2="11.5" stroke="#999999" stroke-width="3"/>
+  <line x1="13" y1="6.5" x2="23" y2="6.5" stroke="#999999" stroke-width="3"/>
+  <line x1="13" y1="16.5" x2="19" y2="16.5" stroke="#999999" stroke-width="3"/>
+  </svg>
+  `,
 };

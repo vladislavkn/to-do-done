@@ -1,6 +1,13 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { Overlay, Todo, ArrayElement } from "./types";
+import { Overlay, Todo, ArrayElement, Category } from "./types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export const saveJSONValue = async (name: string, obj: {}) =>
+  await AsyncStorage.setItem(name, JSON.stringify(obj));
+
+export const sortTodos = (todos: Todo[]): Todo[] =>
+  todos.sort((a: Todo, b: Todo) => a.from - b.from);
 
 export const generateId = () => nanoid();
 
@@ -66,6 +73,7 @@ export const createTodo = (todo: Partial<Todo>, endTime: number) => {
     duration: 0,
     id: generateId(),
     from: endTime,
+    today: todo?.today ?? false,
     ...todo,
   } as Todo;
   newTodo.time = formatTime(newTodo.from, newTodo.duration);
@@ -84,3 +92,17 @@ export const timeButtonGroup: ArrayElement<Overlay["buttonsGroups"]> = {
     };
   }),
 };
+
+export const createCategoriesGroup = (
+  categories: Category[]
+): ArrayElement<Overlay["buttonsGroups"]> => ({
+  selectable: true,
+  buttons: categories.map((category) => ({
+    buttonText: category.name,
+    fn: ({ setPayload, payload }) => {
+      setPayload({
+        categoryId: payload?.categoryId === category.id ? null : category.id,
+      });
+    },
+  })),
+});

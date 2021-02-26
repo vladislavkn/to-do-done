@@ -7,19 +7,21 @@ import {
   StyleSheet,
 } from "react-native";
 import { showAddCategoryOverlay } from "../overlays";
-import { Category } from "../types";
+import { Category, State } from "../types";
 import Icon from "./Icon";
 
 type CategoriesProps = {
   categories: Category[];
   onPress: (category: Category) => void;
-  chosenId: string;
+  onLongPress: (category: Category) => void;
+  chosenId: State["selectedCategoryId"];
 };
 
 const Categories: React.FC<CategoriesProps> = ({
   categories,
   onPress,
   chosenId,
+  onLongPress,
 }) => {
   return (
     <ScrollView
@@ -39,6 +41,7 @@ const Categories: React.FC<CategoriesProps> = ({
         <TouchableNativeFeedback
           key={category.id}
           onPress={() => onPress(category)}
+          onLongPress={() => onLongPress(category)}
         >
           <View style={styles.categoryWrapper}>
             <View

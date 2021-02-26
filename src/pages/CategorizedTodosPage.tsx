@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Categories from "../components/Categories";
 import TodoList from "../components/TodoList";
+import { showEditCategoryOverlay } from "../overlays";
 import useStore from "../store";
 import { selectedCategorySortedTodosSelector } from "../store/selectors";
-import { Category } from "../types";
 
 const CategorizedTodosPage = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useStore((state) => [
@@ -18,6 +18,7 @@ const CategorizedTodosPage = () => {
       <Categories
         categories={categories}
         onPress={setSelectedCategoryId}
+        onLongPress={showEditCategoryOverlay}
         chosenId={selectedCategoryId}
       />
       <TodoList todos={todos} />

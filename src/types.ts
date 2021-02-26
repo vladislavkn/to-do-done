@@ -23,17 +23,20 @@ export type Overlay = {
   payload: StringKeyedObject;
   submit: OverlayCallback;
   inputType: "time" | "text";
-  buttonsGroups: {
-    selectable: boolean;
-    buttons: {
-      buttonText: string;
-      iconProps?: {
-        name: IconName;
-        [key: string]: any;
-      };
-      fn: OverlayCallback;
-    }[];
-  }[];
+  buttonsGroups: (
+    | {
+        selectable: boolean;
+        buttons: {
+          buttonText: string;
+          iconProps?: {
+            name: IconName;
+            [key: string]: any;
+          };
+          fn: OverlayCallback;
+        }[];
+      }
+    | boolean
+  )[];
   initialValue?: StringKeyedObject;
 };
 
@@ -47,7 +50,7 @@ export type State = {
   overlays: Overlay[];
   categories: Category[];
   screen: string;
-  selectedCategoryId: string;
+  selectedCategoryId: string | boolean;
   setSelectedCategoryId: (category: Category) => void;
   navigate: (screen: string) => void;
   openOverlay: (overlay: Partial<Overlay>) => void;
@@ -69,6 +72,7 @@ export type Todo = {
   duration: number;
   categoryId: string;
   time: string;
+  today: boolean;
 };
 
 export type Duration = {

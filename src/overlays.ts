@@ -1,10 +1,20 @@
-import { State, Todo } from "./types";
+import { Category, State, Todo } from "./types";
 import useStore from "./store";
-import { createTodo, timeButtonGroup, formatTime } from "./utils";
+import {
+  createTodo,
+  timeButtonGroup,
+  formatTime,
+  createCategoriesGroup,
+} from "./utils";
 import { endTimeSelector } from "./store/selectors";
+import { Alert } from "react-native";
 
-export const showAddTodoOverlay = () => {
+export const showAddTodoOverlay = (today = false) => {
   const state = useStore.getState();
+  if (!today && state.categories.length === 0) {
+    alert("Fitstly, you need to create at least one category");
+    return;
+  }
 
   state.openOverlay({
     placeholder: "New todo",
@@ -15,7 +25,9 @@ export const showAddTodoOverlay = () => {
           {
             title: payload.value.text,
             duration: payload?.duration ?? 0,
-            categoryId: payload?.categoryId ?? state.selectedCategoryId,
+            categoryId:
+              payload?.categoryId ?? (!today ? state.selectedCategoryId : ""),
+            today,
           },
           endTimeSelector(state)
         );
@@ -23,7 +35,10 @@ export const showAddTodoOverlay = () => {
         state.closeOverlay();
       }
     },
-    buttonsGroups: [timeButtonGroup],
+    buttonsGroups: [
+      timeButtonGroup,
+      state.categories.length > 0 && createCategoriesGroup(state.categories),
+    ],
   });
 };
 
@@ -41,12 +56,16 @@ export const showEditTodoOverlay = (todo: Todo) => {
           todo.duration = payload.duration;
           todo.time = formatTime(todo.from, todo.duration);
         }
+        if (payload.categoryId) {
+          todo.categoryId = payload.categoryId;
+        }
         state.updateTodo(todo);
         state.closeOverlay();
       }
     },
     buttonsGroups: [
       timeButtonGroup,
+      state.categories.length > 0 && createCategoriesGroup(state.categories),
       {
         selectable: false,
         buttons: [
@@ -64,6 +83,40 @@ export const showEditTodoOverlay = (todo: Todo) => {
                 state.updateTodo(todo);
                 state.closeOverlay();
               });
+            },
+          },
+
+          {
+            buttonText: todo.today ? "Remove from today" : "Move to today",
+            iconProps: {
+              name: todo.today ? "remove" : "move",
+              width: 12,
+              height: 12,
+            },
+            fn: () => {
+              if (todo.categoryId.length > 0) {
+                todo.today = !todo.today;
+                state.updateTodo(todo), state.closeOverlay();
+              } else {
+                Alert.alert(
+                  "Alert",
+                  "Todo has no category and will be removed",
+                  [
+                    {
+                      text: "OK",
+                      onPress: () => {
+                        state.removeTodo(todo);
+                        state.closeOverlay();
+                      },
+                    },
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                  ],
+                  { cancelable: true }
+                );
+              }
             },
           },
           {
@@ -112,5 +165,41 @@ export const showAddCategoryOverlay = () => {
         state.closeOverlay();
       }
     },
+  });
+};
+
+export const showEditCategoryOverlay = (category: Category) => {
+  const state = useStore.getState();
+
+  state.openOverlay({
+    inputType: "text",
+    placeholder: "Category name",
+    initialValue: { text: category.name },
+    submit({ payload }) {
+      if (payload.value.text.length > 0) {
+        category.name = payload.value.text;
+        state.updateCategory(category);
+        state.closeOverlay();
+      }
+    },
+    buttonsGroups: [
+      {
+        selectable: false,
+        buttons: [
+          {
+            buttonText: "Delete",
+            iconProps: {
+              name: "delete",
+              width: 12,
+              height: 12,
+            },
+            fn() {
+              state.removeCategory(category);
+              state.closeOverlay();
+            },
+          },
+        ],
+      },
+    ],
   });
 };

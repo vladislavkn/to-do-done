@@ -15,7 +15,11 @@ interface TodoListItemProps {
   todo: Todo;
 }
 
-const TodoListItem = ({ onPress, onChange, todo }: TodoListItemProps) => (
+const TodoListItem: React.FC<TodoListItemProps> = ({
+  onPress,
+  onChange,
+  todo,
+}) => (
   <TouchableNativeFeedback onPress={onPress}>
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={onChange}>

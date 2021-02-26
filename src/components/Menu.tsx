@@ -31,7 +31,7 @@ const Menu = () => {
       </TouchableNativeFeedback>
       <Icon
         style={styles.button}
-        onPress={showAddTodoOverlay}
+        onPress={() => showAddTodoOverlay(screen === "TodayTodoListPage")}
         name="create"
         width={56}
         height={56}
