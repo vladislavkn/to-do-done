@@ -83,7 +83,7 @@ export const createTodo = (todo: Partial<Todo>, endTime: number) => {
 
 export const timeButtonGroup: ArrayElement<Overlay["buttonsGroups"]> = {
   selectable: true,
-  buttons: [5, 10, 20, 30, 40, 60, 70, 80, 90, 120, 180].map((num) => {
+  buttons: [5, 10, 20, 30, 60, 90, 120, 150, 180, 210].map((num) => {
     num = minsToMs(num);
     return {
       buttonText: formatDuration(num),

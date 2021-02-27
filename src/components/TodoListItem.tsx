@@ -27,8 +27,10 @@ const TodoListItem: React.FC<TodoListItemProps> = ({
           <Icon name={todo.done ? "done" : "undone"} width={24} height={24} />
         </View>
       </TouchableWithoutFeedback>
-      <View>
+      <View style={styles.wrapper}>
         <Text
+          numberOfLines={5}
+          ellipsizeMode="tail"
           style={[
             styles.title,
             todo.done && styles.done,
@@ -53,6 +55,9 @@ const styles = StyleSheet.create({
     paddingRight: 24,
     paddingLeft: 8,
   },
+  wrapper: {
+    flex: 1,
+  },
   button: {
     height: "100%",
     flexDirection: "row",
@@ -63,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Montserrat_600SemiBold",
     color: "#555",
+    maxWidth: "100%",
   },
   subtitle: {
     fontSize: 14,
