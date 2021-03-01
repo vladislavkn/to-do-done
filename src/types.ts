@@ -16,28 +16,34 @@ type OverlayData = {
 };
 
 export type OverlayCallback = (data: OverlayData) => void;
+export type OverlayButtonGroup = {
+  selectable: boolean;
+  buttons: {
+    buttonText: string;
+    iconProps?: {
+      name: IconName;
+      [key: string]: any;
+    };
+    fn: OverlayCallback;
+  }[];
+};
 
 export type Overlay = {
   id: string;
   placeholder: string;
   payload: StringKeyedObject;
   submit: OverlayCallback;
-  inputType: "time" | "text";
-  buttonsGroups: (
-    | {
-        selectable: boolean;
-        buttons: {
-          buttonText: string;
-          iconProps?: {
-            name: IconName;
-            [key: string]: any;
-          };
-          fn: OverlayCallback;
-        }[];
-      }
-    | boolean
-  )[];
-  initialValue?: StringKeyedObject;
+  inputType: "time" | "text" | "none";
+  buttonGroups: OverlayButtonGroup[];
+  initialValue: StringKeyedObject;
+};
+
+export type CreateOverlayOptions = {
+  placeholder?: Overlay["placeholder"];
+  submit: Overlay["submit"];
+  inputType: Overlay["inputType"];
+  buttonGroups?: (ArrayElement<Overlay["buttonGroups"]> | boolean)[];
+  initialValue?: Overlay["initialValue"];
 };
 
 export type Category = {
@@ -53,7 +59,7 @@ export type State = {
   selectedCategoryId: string | boolean;
   setSelectedCategoryId: (category: Category) => void;
   navigate: (screen: string) => void;
-  openOverlay: (overlay: Partial<Overlay>) => void;
+  openOverlay: (overlay: CreateOverlayOptions) => void;
   setOverlayPayload: (payload: Partial<Overlay["payload"]>) => void;
   closeOverlay: () => void;
   updateTodo: (todo: Todo) => void;

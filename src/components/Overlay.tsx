@@ -14,6 +14,7 @@ import {
 } from "../store/selectors";
 import {
   Overlay as OverlayType,
+  OverlayButtonGroup,
   OverlayCallback,
   StringKeyedObject,
 } from "../types";
@@ -31,13 +32,11 @@ type SelectedButtonState = {
   [key: number]: string;
 };
 
-const getInitialValue = (inputType: OverlayType["inputType"]) =>
-  inputType === "text"
-    ? { text: "" }
-    : {
-        minutes: "0",
-        hours: "0",
-      };
+const initialValues = {
+  text: { text: "" },
+  time: { minutes: "0", hours: "0" },
+  none: {},
+} as StringKeyedObject;
 
 const Overlay = () => {
   const hasOverlays = useStore(hasOverlaysSelector);
@@ -46,17 +45,18 @@ const Overlay = () => {
     state.setOverlayPayload,
     state.closeOverlay,
   ]);
-  const inputType = overlay?.inputType ?? "text";
+
+  const inputType = overlay?.inputType ?? "none";
 
   const [selectedButtons, setSelectedButtons] = useState<SelectedButtonState>(
     {}
   );
   const [value, setValue] = useState<StringKeyedObject>(
-    getInitialValue(inputType)
+    initialValues[inputType]
   );
 
   useEffect(() => {
-    setValue(overlay?.initialValue ?? getInitialValue(inputType));
+    setValue(overlay?.initialValue ?? initialValues[inputType]);
     setSelectedButtons({});
   }, [overlay?.id]);
 
@@ -69,7 +69,7 @@ const Overlay = () => {
   const handleButtonPress = (args: HandleButtonPressArgs) => {
     const { buttonText, groupIndex, fn } = args;
 
-    if (overlay.buttonsGroups[groupIndex].selectable) {
+    if (overlay?.buttonGroups[groupIndex].selectable) {
       setSelectedButtons((prevState) => ({
         [groupIndex]: prevState[groupIndex] === buttonText ? "" : buttonText,
       }));
@@ -102,7 +102,7 @@ const Overlay = () => {
               selectionColor="rgba(85,85,85,0.2)"
             />
           )}
-          {overlay?.buttonsGroups?.map((group, groupIndex) => (
+          {overlay.buttonGroups.map((group, groupIndex) => (
             <ScrollView
               contentContainerStyle={styles.group}
               key={groupIndex}

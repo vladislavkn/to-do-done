@@ -1,6 +1,12 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { Overlay, Todo, ArrayElement, Category } from "./types";
+import {
+  Overlay,
+  Todo,
+  ArrayElement,
+  Category,
+  OverlayButtonGroup,
+} from "./types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const saveJSONValue = async (name: string, obj: {}) =>
@@ -67,23 +73,7 @@ export const formatTime = (from: number, duratuion: number) => {
   }${fromMinutes}-${toHours}:${toMinutes < 10 ? "0" : ""}${toMinutes}`;
 };
 
-export const createTodo = (todo: Partial<Todo>, endTime: number) => {
-  const newTodo = {
-    done: false,
-    duration: 0,
-    id: generateId(),
-    today: todo?.today ?? false,
-    ...todo,
-  } as Todo;
-  if (newTodo.duration) {
-    newTodo.from = endTime;
-    newTodo.time = formatTime(newTodo.from, newTodo.duration);
-  }
-
-  return newTodo;
-};
-
-export const timeButtonGroup: ArrayElement<Overlay["buttonsGroups"]> = {
+export const timeButtonGroup: OverlayButtonGroup = {
   selectable: true,
   buttons: [5, 10, 20, 30, 60, 90, 120, 150, 180, 210].map((num) => {
     num = minsToMs(num);
@@ -97,7 +87,7 @@ export const timeButtonGroup: ArrayElement<Overlay["buttonsGroups"]> = {
 
 export const createCategoriesGroup = (
   categories: Category[]
-): ArrayElement<Overlay["buttonsGroups"]> => ({
+): OverlayButtonGroup => ({
   selectable: true,
   buttons: categories.map((category) => ({
     buttonText: category.name,

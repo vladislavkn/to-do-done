@@ -1,10 +1,10 @@
 import { Category, State, Todo } from "./types";
 import useStore from "./store";
 import {
-  createTodo,
   timeButtonGroup,
   formatTime,
   createCategoriesGroup,
+  generateId,
 } from "./utils";
 import { endTimeSelector } from "./store/selectors";
 import { Alert } from "react-native";
@@ -21,23 +21,32 @@ export const showAddTodoOverlay = (today = false) => {
     inputType: "text",
     submit({ payload }) {
       if (payload.value.text.length > 0) {
-        const todo: Todo = createTodo(
-          {
-            title: payload.value.text,
-            duration: payload?.duration ?? 0,
-            categoryId:
-              payload?.categoryId ?? (!today ? state.selectedCategoryId : ""),
-            today,
-          },
-          endTimeSelector(state)
-        );
+        const todo = {
+          title: payload.value.text,
+          done: false,
+          id: generateId(),
+          from: 0,
+          duration: payload?.duration ?? 0,
+          categoryId:
+            payload?.categoryId ?? (!today ? state.selectedCategoryId : ""),
+          time: "",
+          today,
+        } as Todo;
+
+        if (todo.duration > 0) {
+          todo.from = endTimeSelector(state);
+          todo.time = formatTime(todo.from, todo.duration);
+        }
+
         state.addTodo(todo);
         state.closeOverlay();
       }
     },
-    buttonsGroups: [
-      timeButtonGroup,
-      state.categories.length > 0 && createCategoriesGroup(state.categories),
+    buttonGroups: [
+      state.screen === "TodayTodoListPage" && timeButtonGroup,
+      state.categories.length > 0 &&
+        state.screen === "TodayTodoListPage" &&
+        createCategoriesGroup(state.categories),
     ],
   });
 };
@@ -63,7 +72,7 @@ export const showEditTodoOverlay = (todo: Todo) => {
         state.closeOverlay();
       }
     },
-    buttonsGroups: [
+    buttonGroups: [
       timeButtonGroup,
       state.categories.length > 0 && createCategoriesGroup(state.categories),
       {
@@ -99,8 +108,8 @@ export const showEditTodoOverlay = (todo: Todo) => {
                 state.updateTodo(todo), state.closeOverlay();
               } else {
                 Alert.alert(
-                  "Alert",
-                  "Todo has no category and will be removed",
+                  "Remove task",
+                  "That task has no category and will be removed.",
                   [
                     {
                       text: "OK",
@@ -182,7 +191,7 @@ export const showEditCategoryOverlay = (category: Category) => {
         state.closeOverlay();
       }
     },
-    buttonsGroups: [
+    buttonGroups: [
       {
         selectable: false,
         buttons: [
