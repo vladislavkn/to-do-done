@@ -11,10 +11,10 @@ import {
 } from "@expo-google-fonts/montserrat";
 import Navigation from "./src/components/Navigation";
 import Menu from "./src/components/Menu";
-import Overlay from "./src/components/Overlay";
 import TodayTodoListPage from "./src/pages/TodayTodoListPage";
 import CategorizedTodosPage from "./src/pages/CategorizedTodosPage";
 import RouterView from "./src/components/RouterView";
+import OverlayWrapper from "./src/components/OverlayWrapper";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -35,7 +35,7 @@ export default function App() {
         routes={{ TodayTodoListPage, CategorizedTodosPage }}
         initial="TodayTodoListPage"
       />
-      <Overlay />
+      <OverlayWrapper />
       <Menu />
     </View>
   );

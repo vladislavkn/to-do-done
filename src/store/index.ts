@@ -64,6 +64,10 @@ const useStore = create<State>(
         })),
       addTodo: (todo) =>
         set((state) => ({ todos: [...state.todos, todo as Todo] })),
+      removeTodos: (fn) =>
+        set((state) => ({
+          todos: state.todos.filter((t) => !fn(t)),
+        })),
       navigate: (screen) => set(() => ({ screen })),
       addCategory: (name) =>
         set((state) => {

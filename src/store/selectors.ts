@@ -1,5 +1,5 @@
 import { State } from "../types";
-import { sortTodos } from "../utils";
+import { getCurrentHoursAndMinutes, sortTodos } from "../utils";
 
 export const hasOverlaysSelector = (state: State): boolean =>
   state.overlays.length > 0;
@@ -21,7 +21,7 @@ export const categorizedTodosSelector = (name: string | undefined) => (
 export const endTimeSelector = (state: State) => {
   const todos = sortedTodayTodosSelector(state);
 
-  if (todos.length === 0) return 0;
+  if (todos.length === 0) return getCurrentHoursAndMinutes().getTime();
   const lastTodo = todos[todos.length - 1];
 
   return lastTodo.from + lastTodo.duration;

@@ -40,7 +40,7 @@ export type Overlay = {
 
 export type CreateOverlayOptions = {
   placeholder?: Overlay["placeholder"];
-  submit: Overlay["submit"];
+  submit?: Overlay["submit"];
   inputType: Overlay["inputType"];
   buttonGroups?: (ArrayElement<Overlay["buttonGroups"]> | boolean)[];
   initialValue?: Overlay["initialValue"];
@@ -64,6 +64,7 @@ export type State = {
   closeOverlay: () => void;
   updateTodo: (todo: Todo) => void;
   removeTodo: (todo: Todo) => void;
+  removeTodos: (fn: (todo: Todo) => Boolean) => void;
   addTodo: (todo: Todo) => void;
   addCategory: (category: string) => void;
   updateCategory: (category: Category) => void;

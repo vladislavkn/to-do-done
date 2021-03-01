@@ -1,16 +1,25 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableNativeFeedback, View } from "react-native";
+import { showOptionsOverlay } from "../overlays";
 import useStore from "../store";
 import { getFormattedDate } from "../utils";
+import Icon from "./Icon";
 
 const Navigation: React.FC = () => (
   <View style={styles.container}>
-    <Text style={styles.title}>
-      {useStore((state) => state.screen) === "TodayTodoListPage"
-        ? "Today"
-        : "Categories"}
-    </Text>
-    <Text style={styles.subtitle}>{getFormattedDate()}</Text>
+    <View>
+      <Text style={styles.title}>
+        {useStore((state) => state.screen) === "TodayTodoListPage"
+          ? "Today"
+          : "Categories"}
+      </Text>
+      <Text style={styles.subtitle}>{getFormattedDate()}</Text>
+    </View>
+    <TouchableNativeFeedback onPress={showOptionsOverlay}>
+      <View style={styles.options}>
+        <Icon name="options" width={6} height={24} />
+      </View>
+    </TouchableNativeFeedback>
   </View>
 );
 
@@ -21,6 +30,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderBottomColor: "#ccc",
     borderBottomWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   title: {
     fontFamily: "Montserrat_700Bold",
@@ -32,6 +44,10 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_500Medium",
     color: "#999",
     fontSize: 18,
+  },
+  options: {
+    paddingVertical: 4,
+    paddingHorizontal: 13,
   },
 });
 

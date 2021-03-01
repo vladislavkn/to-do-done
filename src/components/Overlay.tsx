@@ -39,28 +39,29 @@ const initialValues = {
 } as StringKeyedObject;
 
 const Overlay = () => {
-  const hasOverlays = useStore(hasOverlaysSelector);
   const overlay = useStore(currentOverlaySelector);
   const [setOverlayPayload, closeOverlay] = useStore((state) => [
     state.setOverlayPayload,
     state.closeOverlay,
   ]);
 
-  const inputType = overlay?.inputType ?? "none";
+  const inputType = overlay.inputType ?? "none";
+  const hasInitialValue = Object.keys(overlay.initialValue).length > 0;
 
   const [selectedButtons, setSelectedButtons] = useState<SelectedButtonState>(
     {}
   );
   const [value, setValue] = useState<StringKeyedObject>(
-    initialValues[inputType]
+    hasInitialValue ? overlay.initialValue : initialValues[inputType]
   );
 
   useEffect(() => {
-    setValue(overlay?.initialValue ?? initialValues[inputType]);
+    setValue(hasInitialValue ? overlay.initialValue : initialValues[inputType]);
     setSelectedButtons({});
   }, [overlay?.id]);
 
-  const handleCallback = (fn: OverlayCallback) =>
+  const handleCallback = (fn?: OverlayCallback) =>
+    fn &&
     fn({
       payload: { ...overlay?.payload, value },
       setPayload: setOverlayPayload,
@@ -78,22 +79,23 @@ const Overlay = () => {
     handleCallback(fn);
   };
 
-  return hasOverlays ? (
+  return (
     <TouchableWithoutFeedback
       onPress={(e) => e.target === e.currentTarget && closeOverlay()}
     >
       <View style={styles.backdrop}>
         <View style={styles.container}>
-          {inputType === "text" ? (
+          {inputType === "text" && (
             <OverlayTextInput
               value={value}
               onChange={setValue}
-              onSubmitEditing={() => handleCallback(overlay.submit)}
+              onSubmitEditing={() => handleCallback(overlay?.submit)}
               placeholder={overlay.placeholder}
               placeholderTextColor="#999"
               selectionColor="rgba(85,85,85,0.2)"
             />
-          ) : (
+          )}
+          {inputType === "time" && (
             <OverlayTimeInput
               value={value}
               onChange={setValue}
@@ -142,7 +144,7 @@ const Overlay = () => {
         </View>
       </View>
     </TouchableWithoutFeedback>
-  ) : null;
+  );
 };
 
 const styles = StyleSheet.create({

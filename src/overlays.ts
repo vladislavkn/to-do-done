@@ -5,6 +5,7 @@ import {
   formatTime,
   createCategoriesGroup,
   generateId,
+  createDate,
 } from "./utils";
 import { endTimeSelector } from "./store/selectors";
 import { Alert } from "react-native";
@@ -112,7 +113,7 @@ export const showEditTodoOverlay = (todo: Todo) => {
                   "That task has no category and will be removed.",
                   [
                     {
-                      text: "OK",
+                      text: "Remove",
                       onPress: () => {
                         state.removeTodo(todo);
                         state.closeOverlay();
@@ -151,10 +152,11 @@ const showUpdateTimeOverlay = (callback: (time: number) => void) => {
   state.openOverlay({
     inputType: "time",
     submit({ payload }) {
-      if (payload.value.minutes.length > 0 && payload.value.hours.length > 0) {
-        const date = new Date();
-        date.setHours(parseInt(payload.value.hours));
-        date.setMinutes(parseInt(payload.value.minutes));
+      if (
+        payload?.value?.minutes?.length > 0 &&
+        payload?.value?.hours?.length > 0
+      ) {
+        const date = createDate(payload.value.hours, payload.value.minutes);
         callback(date.getTime());
         state.closeOverlay();
       }
@@ -205,6 +207,82 @@ export const showEditCategoryOverlay = (category: Category) => {
             fn() {
               state.removeCategory(category);
               state.closeOverlay();
+            },
+          },
+        ],
+      },
+    ],
+  });
+};
+
+export const showOptionsOverlay = () => {
+  const state = useStore.getState();
+
+  state.openOverlay({
+    inputType: "none",
+    buttonGroups: [
+      {
+        selectable: false,
+        buttons: [
+          {
+            buttonText: "Remove done tasks",
+            fn() {
+              Alert.alert(
+                "Remove done tasks",
+                "Remove all completed tasks? You will not be able to restore them.",
+                [
+                  {
+                    text: "Remove",
+                    onPress() {
+                      if (state.screen === "TodayTodoListPage") {
+                        state.removeTodos((t) => t.today && t.done);
+                        state.closeOverlay();
+                      } else {
+                        state.removeTodos(
+                          (t) =>
+                            t.categoryId === state.selectedCategoryId && t.done
+                        );
+                        state.closeOverlay();
+                      }
+                    },
+                  },
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                ],
+                { cancelable: true }
+              );
+            },
+          },
+          {
+            buttonText: "Remove All tasks",
+            fn() {
+              Alert.alert(
+                "Remove all tasks",
+                "Remove all tasks? You will not be able to restore them.",
+                [
+                  {
+                    text: "Remove",
+                    onPress() {
+                      if (state.screen === "TodayTodoListPage") {
+                        state.removeTodos((t) => t.today);
+                        state.closeOverlay();
+                      } else {
+                        state.removeTodos(
+                          (t) => t.categoryId === state.selectedCategoryId
+                        );
+                        state.closeOverlay();
+                      }
+                    },
+                  },
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                ],
+                { cancelable: true }
+              );
             },
           },
         ],

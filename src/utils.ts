@@ -73,6 +73,18 @@ export const formatTime = (from: number, duratuion: number) => {
   }${fromMinutes}-${toHours}:${toMinutes < 10 ? "0" : ""}${toMinutes}`;
 };
 
+export const createDate = (hours: number, minutes: number) => {
+  const date = new Date(0);
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  return date;
+};
+
+export const getCurrentHoursAndMinutes = () => {
+  const date = new Date();
+  return createDate(date.getHours(), date.getMinutes());
+};
+
 export const timeButtonGroup: OverlayButtonGroup = {
   selectable: true,
   buttons: [5, 10, 20, 30, 60, 90, 120, 150, 180, 210].map((num) => {
