@@ -94,6 +94,7 @@ const useStore = create<State>(
       name: "tododone",
       getStorage: () => AsyncStorage,
       version: parseInt(config.expo.version[0]),
+      whitelist: ["todos", "categories"],
     }
   )
 );

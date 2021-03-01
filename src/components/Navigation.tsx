@@ -16,7 +16,8 @@ const Navigation: React.FC = () => (
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
     backgroundColor: "#fff",
     borderBottomColor: "#ccc",
     borderBottomWidth: 1,
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Montserrat_700Bold",
     color: "#555",
-    fontSize: 36,
+    fontSize: 32,
     marginBottom: 8,
   },
   subtitle: {
