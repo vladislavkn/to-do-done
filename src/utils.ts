@@ -72,11 +72,13 @@ export const createTodo = (todo: Partial<Todo>, endTime: number) => {
     done: false,
     duration: 0,
     id: generateId(),
-    from: endTime,
     today: todo?.today ?? false,
     ...todo,
   } as Todo;
-  newTodo.time = formatTime(newTodo.from, newTodo.duration);
+  if (newTodo.duration) {
+    newTodo.from = endTime;
+    newTodo.time = formatTime(newTodo.from, newTodo.duration);
+  }
 
   return newTodo;
 };

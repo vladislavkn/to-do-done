@@ -21,7 +21,7 @@ export const categorizedTodosSelector = (name: string | undefined) => (
 export const endTimeSelector = (state: State) => {
   const todos = sortedTodayTodosSelector(state);
 
-  if (todos.length === 0) return Date.now();
+  if (todos.length === 0) return 0;
   const lastTodo = todos[todos.length - 1];
 
   return lastTodo.from + lastTodo.duration;
