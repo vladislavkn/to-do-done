@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ScrollView } from "react-native";
 import Categories from "../components/Categories";
 import TodoList from "../components/TodoList";
 import { showEditCategoryOverlay } from "../overlays";
@@ -21,7 +22,9 @@ const CategorizedTodosPage = () => {
         onLongPress={showEditCategoryOverlay}
         chosenId={selectedCategoryId}
       />
-      <TodoList todos={todos} />
+      <ScrollView style={{ flexGrow: 1 }}>
+        <TodoList todos={todos} />
+      </ScrollView>
     </>
   );
 };

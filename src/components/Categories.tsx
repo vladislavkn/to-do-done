@@ -66,6 +66,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBFBFB",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+    flexGrow: 0,
+    flexShrink: 0,
   },
   categoryWrapper: {
     padding: 8,

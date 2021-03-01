@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import AppLoading from "expo-app-loading";
 import React from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import {
   useFonts,
   Montserrat_500Medium,
@@ -31,12 +31,10 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar style="dark" />
       <Navigation />
-      <ScrollView style={styles.page}>
-        <RouterView
-          routes={{ TodayTodoListPage, CategorizedTodosPage }}
-          initial="TodayTodoListPage"
-        />
-      </ScrollView>
+      <RouterView
+        routes={{ TodayTodoListPage, CategorizedTodosPage }}
+        initial="TodayTodoListPage"
+      />
       <Overlay />
       <Menu />
     </View>
@@ -48,8 +46,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingTop: Constants.statusBarHeight,
-  },
-  page: {
-    flexGrow: 1,
+    maxHeight: Dimensions.get("screen").height,
   },
 });
