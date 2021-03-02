@@ -53,10 +53,10 @@ export const formatTime = (from: number, duratuion: number) => {
 
   const fromDate = new Date(from),
     toDate = new Date(from + duratuion),
-    fromHours = fromDate.getHours(),
-    fromMinutes = fromDate.getMinutes(),
-    toHours = toDate.getHours(),
-    toMinutes = toDate.getMinutes(),
+    fromHours = fromDate.getUTCHours(),
+    fromMinutes = fromDate.getUTCMinutes(),
+    toHours = toDate.getUTCHours(),
+    toMinutes = toDate.getUTCMinutes(),
     durationString = duratuion > 0 ? formatDuration(duratuion) : "",
     timeStartString =
       from > 0
@@ -75,14 +75,13 @@ export const formatTime = (from: number, duratuion: number) => {
 
 export const createDate = (hours: number, minutes: number) => {
   const date = new Date(0);
-  date.setHours(hours);
-  date.setMinutes(minutes);
+  date.setUTCHours(hours, minutes);
   return date;
 };
 
 export const getCurrentHoursAndMinutes = () => {
   const date = new Date();
-  return createDate(date.getHours(), date.getMinutes());
+  return createDate(date.getUTCHours(), date.getUTCMinutes());
 };
 
 export const timeButtonGroup: OverlayButtonGroup = {

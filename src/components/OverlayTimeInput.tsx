@@ -32,18 +32,19 @@ const OverlayTimeInput: React.FC<OverlayInputProps> = (props) => {
       <View style={[styles.wrapper, { marginRight: 16 }]}>
         <Text style={styles.label}>HOURS</Text>
         <TextInput
+          {...rest}
           maxLength={2}
           keyboardType="decimal-pad"
           placeholder="..."
           style={styles.input}
           value={value.hours}
           onChangeText={handleHoursChange}
-          {...rest}
         />
       </View>
       <View style={styles.wrapper}>
         <Text style={styles.label}>MINUTES</Text>
         <TextInput
+          {...rest}
           ref={minutesRef}
           keyboardType="decimal-pad"
           placeholder="..."
@@ -51,7 +52,6 @@ const OverlayTimeInput: React.FC<OverlayInputProps> = (props) => {
           style={styles.input}
           value={value.minutes}
           onChangeText={handleMinutesChange}
-          {...rest}
           autoFocus={false}
         />
       </View>
