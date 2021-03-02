@@ -19,17 +19,21 @@ const useStore = create<State>(
         set(() => ({
           selectedCategoryId: category.id,
         })),
-      openOverlay: (overlay) =>
+      openOverlay: (overlayOptions) =>
         set((state) => {
-          (overlay as Overlay).id = generateId();
-          (overlay as Overlay).payload = {};
-          (overlay as Overlay).inputType = overlay?.inputType ?? "none";
-          (overlay as Overlay).initialValue = overlay?.initialValue ?? {};
-          (overlay as Overlay).placeholder = overlay?.placeholder ?? "";
-          (overlay as Overlay).buttonGroups =
-            (overlay?.buttonGroups?.filter(
-              Boolean
-            ) as Overlay["buttonGroups"]) ?? [];
+          const overlay: Overlay = {
+            ...overlayOptions,
+            id: generateId(),
+            payload: {},
+            initialValue: overlayOptions?.initialValue ?? {},
+            placeholder: overlayOptions?.placeholder ?? "",
+            buttonGroups:
+              (overlayOptions?.buttonGroups?.filter(
+                Boolean
+              ) as Overlay["buttonGroups"]) ?? [],
+            autofocus: overlayOptions?.autofocus ?? false,
+          };
+
           return {
             overlays: [...state.overlays, overlay as Overlay],
           };

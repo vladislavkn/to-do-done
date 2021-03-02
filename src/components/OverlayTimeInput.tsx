@@ -1,21 +1,10 @@
 import React, { useRef } from "react";
 import { TextInput, StyleSheet, View, Text } from "react-native";
+import { OverlayInputProps } from "../types";
 
-type OverlayTimeInputProps = {
-  value: {
-    [key: string]: any;
-  };
-  onChange: (
-    value: React.SetStateAction<OverlayTimeInputProps["value"]>
-  ) => void;
-  [key: string]: any;
-};
+const OverlayTimeInput: React.FC<OverlayInputProps> = (props) => {
+  const { value, onChange, ...rest } = props;
 
-const OverlayTimeInput: React.FC<OverlayTimeInputProps> = ({
-  value,
-  onChange,
-  ...rest
-}) => {
   const minutesRef = useRef<TextInput>(null);
   const validateTimeInput = (time: string, max: number): string => {
     if (!/^\d$/.test(time)) time = time.replace(/\D/g, "");
@@ -25,6 +14,17 @@ const OverlayTimeInput: React.FC<OverlayTimeInputProps> = ({
       else if (parseInt(time) < 0) time = "0";
     }
     return time;
+  };
+
+  const handleHoursChange = (hours: string) => {
+    hours = validateTimeInput(hours, 23);
+    if (hours.length == 2) minutesRef.current && minutesRef.current.focus();
+    onChange((prevState) => ({ ...prevState, hours }));
+  };
+
+  const handleMinutesChange = (minutes: string) => {
+    minutes = validateTimeInput(minutes, 59);
+    onChange((prevState) => ({ ...prevState, minutes }));
   };
 
   return (
@@ -37,13 +37,7 @@ const OverlayTimeInput: React.FC<OverlayTimeInputProps> = ({
           placeholder="..."
           style={styles.input}
           value={value.hours}
-          autoFocus
-          onChangeText={(hours: string) => {
-            hours = validateTimeInput(hours, 23);
-            if (hours.length == 2)
-              minutesRef.current && minutesRef.current.focus();
-            onChange((prevState) => ({ ...prevState, hours }));
-          }}
+          onChangeText={handleHoursChange}
           {...rest}
         />
       </View>
@@ -56,11 +50,9 @@ const OverlayTimeInput: React.FC<OverlayTimeInputProps> = ({
           maxLength={2}
           style={styles.input}
           value={value.minutes}
-          onChangeText={(minutes: string) => {
-            minutes = validateTimeInput(minutes, 59);
-            onChange((prevState) => ({ ...prevState, minutes }));
-          }}
+          onChangeText={handleMinutesChange}
           {...rest}
+          autoFocus={false}
         />
       </View>
     </View>

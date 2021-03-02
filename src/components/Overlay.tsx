@@ -6,19 +6,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableWithoutFeedback,
+  GestureResponderEvent,
 } from "react-native";
 import useStore from "../store";
-import {
-  currentOverlaySelector,
-  hasOverlaysSelector,
-} from "../store/selectors";
-import {
-  Overlay as OverlayType,
-  OverlayButtonGroup,
-  OverlayCallback,
-  StringKeyedObject,
-} from "../types";
+import { currentOverlaySelector } from "../store/selectors";
+import { OverlayCallback, StringKeyedObject } from "../types";
 import Icon from "./Icon";
+import OverlayInput from "./OverlayInput";
 import OverlayTextInput from "./OverlayTextInput";
 import OverlayTimeInput from "./OverlayTimeInput";
 
@@ -32,11 +26,11 @@ type SelectedButtonState = {
   [key: number]: string;
 };
 
-const initialValues = {
+const initialValues: StringKeyedObject = {
   text: { text: "" },
   time: { minutes: "0", hours: "0" },
   none: {},
-} as StringKeyedObject;
+};
 
 const Overlay = () => {
   const overlay = useStore(currentOverlaySelector);
@@ -47,30 +41,30 @@ const Overlay = () => {
 
   const inputType = overlay.inputType ?? "none";
   const hasInitialValue = Object.keys(overlay.initialValue).length > 0;
+  const getInitialValue = () =>
+    hasInitialValue ? overlay.initialValue : initialValues[inputType];
 
   const [selectedButtons, setSelectedButtons] = useState<SelectedButtonState>(
     {}
   );
-  const [value, setValue] = useState<StringKeyedObject>(
-    hasInitialValue ? overlay.initialValue : initialValues[inputType]
-  );
+  const [value, setValue] = useState<StringKeyedObject>(getInitialValue());
 
   useEffect(() => {
-    setValue(hasInitialValue ? overlay.initialValue : initialValues[inputType]);
+    setValue(getInitialValue());
     setSelectedButtons({});
-  }, [overlay?.id]);
+  }, [overlay.id]);
 
   const handleCallback = (fn?: OverlayCallback) =>
     fn &&
     fn({
-      payload: { ...overlay?.payload, value },
+      payload: { ...overlay.payload, value },
       setPayload: setOverlayPayload,
     });
 
   const handleButtonPress = (args: HandleButtonPressArgs) => {
     const { buttonText, groupIndex, fn } = args;
 
-    if (overlay?.buttonGroups[groupIndex].selectable) {
+    if (overlay.buttonGroups[groupIndex].selectable) {
       setSelectedButtons((prevState) => ({
         [groupIndex]: prevState[groupIndex] === buttonText ? "" : buttonText,
       }));
@@ -79,31 +73,27 @@ const Overlay = () => {
     handleCallback(fn);
   };
 
+  const handleClose = (e: GestureResponderEvent) => {
+    if (e.target === e.currentTarget) {
+      handleCallback(overlay?.submit);
+      closeOverlay();
+    }
+  };
+
   return (
-    <TouchableWithoutFeedback
-      onPress={(e) => e.target === e.currentTarget && closeOverlay()}
-    >
+    <TouchableWithoutFeedback onPress={handleClose}>
       <View style={styles.backdrop}>
         <View style={styles.container}>
-          {inputType === "text" && (
-            <OverlayTextInput
-              value={value}
-              onChange={setValue}
-              onSubmitEditing={() => handleCallback(overlay?.submit)}
-              placeholder={overlay.placeholder}
-              placeholderTextColor="#999"
-              selectionColor="rgba(85,85,85,0.2)"
-            />
-          )}
-          {inputType === "time" && (
-            <OverlayTimeInput
-              value={value}
-              onChange={setValue}
-              onSubmitEditing={() => handleCallback(overlay.submit)}
-              placeholderTextColor="#999"
-              selectionColor="rgba(85,85,85,0.2)"
-            />
-          )}
+          <OverlayInput
+            inputType={inputType}
+            value={value}
+            onChange={setValue}
+            onSubmitEditing={() => handleCallback(overlay?.submit)}
+            placeholder={overlay.placeholder}
+            placeholderTextColor="#999"
+            selectionColor="rgba(85,85,85,0.2)"
+            autoFocus={overlay.autofocus}
+          />
           {overlay.buttonGroups.map((group, groupIndex) => (
             <ScrollView
               contentContainerStyle={styles.group}

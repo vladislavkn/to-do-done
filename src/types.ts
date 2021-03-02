@@ -16,6 +16,7 @@ type OverlayData = {
 };
 
 export type OverlayCallback = (data: OverlayData) => void;
+
 export type OverlayButtonGroup = {
   selectable: boolean;
   buttons: {
@@ -30,20 +31,24 @@ export type OverlayButtonGroup = {
 
 export type Overlay = {
   id: string;
+  autofocus: boolean;
   placeholder: string;
   payload: StringKeyedObject;
-  submit: OverlayCallback;
   inputType: "time" | "text" | "none";
   buttonGroups: OverlayButtonGroup[];
   initialValue: StringKeyedObject;
+  submit?: OverlayCallback;
 };
 
-export type CreateOverlayOptions = {
-  placeholder?: Overlay["placeholder"];
-  submit?: Overlay["submit"];
-  inputType: Overlay["inputType"];
-  buttonGroups?: (ArrayElement<Overlay["buttonGroups"]> | boolean)[];
-  initialValue?: Overlay["initialValue"];
+export type CreateOverlayOptions = Pick<Overlay, "inputType" | "submit"> &
+  Partial<Pick<Overlay, "placeholder" | "initialValue" | "autofocus">> & {
+    buttonGroups?: (ArrayElement<Overlay["buttonGroups"]> | boolean)[];
+  };
+
+export type OverlayInputProps = {
+  value: StringKeyedObject;
+  onChange: (value: React.SetStateAction<OverlayInputProps["value"]>) => void;
+  [key: string]: any;
 };
 
 export type Category = {
@@ -80,9 +85,4 @@ export type Todo = {
   categoryId: string;
   time: string;
   today: boolean;
-};
-
-export type Duration = {
-  hours: number;
-  minutes: number;
 };

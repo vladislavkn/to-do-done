@@ -1,27 +1,19 @@
 import React from "react";
 import { TextInput, StyleSheet } from "react-native";
+import { OverlayInputProps } from "../types";
 
-type OverlayTextInputProps = {
-  value: {
-    [key: string]: any;
-  };
-  onChange: (value: OverlayTextInputProps["value"]) => void;
-  [key: string]: any;
+const OverlayTextInput: React.FC<OverlayInputProps> = (props) => {
+  const { value, onChange, ...rest } = props;
+
+  return (
+    <TextInput
+      style={styles.input}
+      value={value.text}
+      onChangeText={(text: string) => onChange({ text })}
+      {...rest}
+    />
+  );
 };
-
-const OverlayTextInput: React.FC<OverlayTextInputProps> = ({
-  value,
-  onChange,
-  ...rest
-}) => (
-  <TextInput
-    style={styles.input}
-    value={value.text}
-    onChangeText={(text: string) => onChange({ text })}
-    autoFocus
-    {...rest}
-  />
-);
 
 const styles = StyleSheet.create({
   input: {

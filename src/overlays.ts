@@ -13,31 +13,28 @@ import { Alert } from "react-native";
 export const showAddTodoOverlay = (today = false) => {
   const state = useStore.getState();
   if (!today && state.categories.length === 0) {
-    alert("Fitstly, you need to create at least one category");
+    alert("First create at least one category.");
     return;
   }
 
   state.openOverlay({
     placeholder: "New todo",
     inputType: "text",
+    autofocus: true,
     submit({ payload }) {
       if (payload.value.text.length > 0) {
         const todo = {
           title: payload.value.text,
           done: false,
           id: generateId(),
-          from: 0,
+          from: endTimeSelector(state),
           duration: payload?.duration ?? 0,
           categoryId:
             payload?.categoryId ?? (!today ? state.selectedCategoryId : ""),
           time: "",
           today,
         } as Todo;
-
-        if (todo.duration > 0) {
-          todo.from = endTimeSelector(state);
-          todo.time = formatTime(todo.from, todo.duration);
-        }
+        todo.time = formatTime(todo.from, todo.duration);
 
         state.addTodo(todo);
         state.closeOverlay();
@@ -149,8 +146,10 @@ export const showEditTodoOverlay = (todo: Todo) => {
 
 const showUpdateTimeOverlay = (callback: (time: number) => void) => {
   const state: State = useStore.getState();
+
   state.openOverlay({
     inputType: "time",
+    autofocus: true,
     submit({ payload }) {
       if (
         payload?.value?.minutes?.length > 0 &&
@@ -169,6 +168,7 @@ export const showAddCategoryOverlay = () => {
 
   state.openOverlay({
     inputType: "text",
+    autofocus: true,
     placeholder: "New Category",
     submit({ payload }) {
       if (payload.value.text.length > 0) {
