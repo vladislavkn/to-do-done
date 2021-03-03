@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { ScrollView } from "react-native";
 import Categories from "../components/Categories";
 import TodoList from "../components/TodoList";
-import { showEditCategoryOverlay } from "../overlays";
+import { showEditCategoryModal } from "../modals";
 import useStore from "../store";
 import { selectedCategorySortedTodosSelector } from "../store/selectors";
 
@@ -19,7 +19,7 @@ const CategorizedTodosPage = () => {
       <Categories
         categories={categories}
         onPress={setSelectedCategoryId}
-        onLongPress={showEditCategoryOverlay}
+        onLongPress={showEditCategoryModal}
         chosenId={selectedCategoryId}
       />
       <ScrollView style={{ flexGrow: 1 }}>

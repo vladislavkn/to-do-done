@@ -6,7 +6,7 @@ import {
   TouchableNativeFeedback,
   StyleSheet,
 } from "react-native";
-import { showAddCategoryOverlay } from "../overlays";
+import { showAddCategoryModal } from "../modals";
 import { Category, State } from "../types";
 import Icon from "./Icon";
 
@@ -29,7 +29,7 @@ const Categories: React.FC<CategoriesProps> = ({
       horizontal
       showsHorizontalScrollIndicator={false}
     >
-      <TouchableNativeFeedback onPress={showAddCategoryOverlay}>
+      <TouchableNativeFeedback onPress={showAddCategoryModal}>
         <View style={styles.categoryWrapper}>
           <View style={[styles.category, styles.button]}>
             <Icon style={styles.icon} name="add" width={12} height={12} />

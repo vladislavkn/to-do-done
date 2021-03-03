@@ -4,10 +4,11 @@ import {
   Dimensions,
   StyleSheet,
   TouchableNativeFeedback,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 import useStore from "../store";
-import { showAddTodoOverlay } from "../overlays";
+import { showAddTodoModal } from "../modals";
 import Icon from "./Icon";
 
 const Menu = () => {
@@ -29,13 +30,13 @@ const Menu = () => {
           />
         </View>
       </TouchableNativeFeedback>
-      <Icon
-        style={styles.button}
-        onPress={() => showAddTodoOverlay(screen === "TodayTodoListPage")}
-        name="create"
-        width={56}
-        height={56}
-      />
+      <View style={styles.AddButtonWrapper}>
+        <TouchableWithoutFeedback
+          onPressIn={() => showAddTodoModal(screen === "TodayTodoListPage")}
+        >
+          <Icon name="create" width={56} height={56} />
+        </TouchableWithoutFeedback>
+      </View>
       <TouchableNativeFeedback onPress={() => navigate("CategorizedTodosPage")}>
         <View style={styles.wrapper}>
           <Icon
@@ -63,7 +64,8 @@ const styles = StyleSheet.create({
     borderTopColor: "#CCCCCC",
     borderTopWidth: 1,
   },
-  button: {
+  AddButtonWrapper: {
+    zIndex: 1,
     position: "absolute",
     left: (Dimensions.get("screen").width - 56) / 2,
     top: -28,

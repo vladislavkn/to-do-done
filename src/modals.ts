@@ -11,7 +11,7 @@ import { endTimeSelector } from "./store/selectors";
 import { Alert } from "react-native";
 import { useModalStore } from "./store/modal";
 
-export const showAddTodoOverlay = (today = false) => {
+export const showAddTodoModal = (today = false) => {
   const state = useStore.getState();
   const modalState = useModalStore.getState();
   if (!today && state.categories.length === 0) {
@@ -24,7 +24,7 @@ export const showAddTodoOverlay = (today = false) => {
     inputType: "text",
     autoFocus: true,
     submit(modal) {
-      if (modal.value.text.length > 0) {
+      if (modal.value.text.trim().length > 0) {
         const todo = {
           title: modal.value.text,
           done: false,
@@ -51,7 +51,7 @@ export const showAddTodoOverlay = (today = false) => {
   });
 };
 
-export const showEditTodoOverlay = (todo: Todo) => {
+export const showEditTodoModal = (todo: Todo) => {
   const state: State = useStore.getState();
   const modalState = useModalStore.getState();
 
@@ -60,7 +60,7 @@ export const showEditTodoOverlay = (todo: Todo) => {
     initialValue: { text: todo.title },
     inputType: "text",
     submit(modal) {
-      if (modal.value.text.length > 0) {
+      if (modal.value.text.trim().length > 0) {
         todo.title = modal.value.text;
         if (modal.value.duration) {
           todo.duration = modal.value.duration;
@@ -87,7 +87,7 @@ export const showEditTodoOverlay = (todo: Todo) => {
               height: 12,
             },
             onPress() {
-              showUpdateTimeOverlay((time) => {
+              showUpdateTimeModal((time) => {
                 todo.from = time;
                 todo.time = formatTime(todo.from, todo.duration);
                 state.updateTodo(todo);
@@ -148,7 +148,7 @@ export const showEditTodoOverlay = (todo: Todo) => {
   });
 };
 
-const showUpdateTimeOverlay = (callback: (time: number) => void) => {
+const showUpdateTimeModal = (callback: (time: number) => void) => {
   const modalState = useModalStore.getState();
 
   modalState.push({
@@ -164,7 +164,7 @@ const showUpdateTimeOverlay = (callback: (time: number) => void) => {
   });
 };
 
-export const showAddCategoryOverlay = () => {
+export const showAddCategoryModal = () => {
   const modalState = useModalStore.getState();
   const state = useStore.getState();
 
@@ -173,7 +173,7 @@ export const showAddCategoryOverlay = () => {
     placeholder: "New category",
     autoFocus: true,
     submit(modal) {
-      if (modal.value.text.length > 0) {
+      if (modal.value.text.trim().length > 0) {
         state.addCategory(modal.value.text);
         modalState.pop();
       }
@@ -181,7 +181,7 @@ export const showAddCategoryOverlay = () => {
   });
 };
 
-export const showEditCategoryOverlay = (category: Category) => {
+export const showEditCategoryModal = (category: Category) => {
   const state = useStore.getState();
   const modalState = useModalStore.getState();
 
@@ -190,7 +190,7 @@ export const showEditCategoryOverlay = (category: Category) => {
     placeholder: "Category name",
     initialValue: { text: category.name },
     submit(modal) {
-      if (modal.value.text.length > 0) {
+      if (modal.value.text.trim().length > 0) {
         category.name = modal.value.text;
         state.updateCategory(category);
         modalState.pop();
@@ -218,7 +218,7 @@ export const showEditCategoryOverlay = (category: Category) => {
   });
 };
 
-export const showOptionsOverlay = () => {
+export const showOptionsModal = () => {
   const state = useStore.getState();
   const modalState = useModalStore.getState();
 

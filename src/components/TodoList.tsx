@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import useStore from "../store";
 import { Todo } from "../types";
-import { showEditTodoOverlay } from "../overlays";
+import { showEditTodoModal } from "../modals";
 import TodoListItem from "./TodoListItem";
 
 type TodoListProps = {
@@ -17,7 +17,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos }) => {
     updateTodo(todo);
   };
 
-  const handlePress = (todo: Todo) => showEditTodoOverlay(todo);
+  const handlePress = (todo: Todo) => showEditTodoModal(todo);
 
   return (
     <View style={styles.container}>

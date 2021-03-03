@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TouchableNativeFeedback, View } from "react-native";
-import { showOptionsOverlay } from "../overlays";
+import { showOptionsModal } from "../modals";
 import useStore from "../store";
 import { getFormattedDate } from "../utils";
 import Icon from "./Icon";
@@ -15,7 +15,7 @@ const Navigation: React.FC = () => (
       </Text>
       <Text style={styles.subtitle}>{getFormattedDate()}</Text>
     </View>
-    <TouchableNativeFeedback onPress={showOptionsOverlay}>
+    <TouchableNativeFeedback onPress={showOptionsModal}>
       <View style={styles.options}>
         <Icon name="options" width={6} height={24} />
       </View>
