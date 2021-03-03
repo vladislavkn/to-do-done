@@ -28,11 +28,15 @@ const Modal = () => {
   const [update, pop] = useModalStore((state) => [state.update, state.pop]);
   const ModalInput = getInputComponent(modal.inputType);
 
-  const handleButtonPress = (group: ModalButtonGroup, text: string) => {
-    // const group = modal.buttonGroups[groupIndex];
+  const handleButtonPress = (
+    group: ModalButtonGroup,
+    index: number,
+    text: string
+  ) => {
     const fn = group.buttons.find((b) => b.text === text)?.onPress;
     fn && fn(modal);
     group.selectable && (group.selected = text);
+    modal.buttonGroups[index] = group;
     update(modal);
   };
 
@@ -62,29 +66,27 @@ const Modal = () => {
               showsHorizontalScrollIndicator={false}
               horizontal
             >
-              {group.buttons.map(
-                ({ text, iconProps = null, onPress }, buttonIndex) => (
-                  <TouchableNativeFeedback
-                    key={text}
-                    onPress={() => handleButtonPress(group, text)}
+              {group.buttons.map(({ text, iconProps = null }, buttonIndex) => (
+                <TouchableNativeFeedback
+                  key={text}
+                  onPress={() => handleButtonPress(group, groupIndex, text)}
+                >
+                  <View
+                    style={[
+                      styles.button,
+                      group.selected === text && styles.selectedButton,
+                      buttonIndex !== group.buttons.length - 1 && {
+                        marginRight: 16,
+                      },
+                    ]}
                   >
-                    <View
-                      style={[
-                        styles.button,
-                        group.selected === text && styles.selectedButton,
-                        buttonIndex !== group.buttons.length - 1 && {
-                          marginRight: 16,
-                        },
-                      ]}
-                    >
-                      {iconProps ? (
-                        <Icon style={styles.icon} {...iconProps} />
-                      ) : null}
-                      <Text style={styles.buttonText}>{text}</Text>
-                    </View>
-                  </TouchableNativeFeedback>
-                )
-              )}
+                    {iconProps ? (
+                      <Icon style={styles.icon} {...iconProps} />
+                    ) : null}
+                    <Text style={styles.buttonText}>{text}</Text>
+                  </View>
+                </TouchableNativeFeedback>
+              ))}
               <View style={{ width: 24 }}></View>
             </ScrollView>
           ))}
