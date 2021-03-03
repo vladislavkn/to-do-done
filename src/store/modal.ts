@@ -5,6 +5,7 @@ import {
   ModalTimeValue,
   ModalTextValue,
   ModalInputType,
+  ModalButtonGroup,
 } from "../types";
 import { generateId } from "../utils";
 
@@ -32,11 +33,14 @@ export const useModalStore = create<ModalState>((set) => ({
       const inputType = createModalOptions?.inputType ?? "none";
       const modal: Modal = {
         inputType,
-        autofocus: createModalOptions.autofocus ?? false,
+        autoFocus: createModalOptions.autoFocus ?? false,
         value:
           createModalOptions?.initialValue ?? getModalInitialValue(inputType),
         id: generateId(),
-        buttonGroups: createModalOptions?.buttonGroups?.filter(Boolean) ?? [],
+        buttonGroups:
+          (createModalOptions?.buttonGroups?.filter(
+            Boolean
+          ) as ModalButtonGroup[]) ?? [],
         placeholder: createModalOptions.placeholder ?? "",
         submit: createModalOptions.submit,
       };

@@ -1,17 +1,19 @@
 import React, { useRef } from "react";
 import { TextInput, StyleSheet, View, Text } from "react-native";
-import { OverlayInputProps } from "../types";
+import { ModalInputProps } from "../types";
 
-const OverlayTimeInput: React.FC<OverlayInputProps> = (props) => {
+const ModalTimeInput: React.FC<ModalInputProps> = (props) => {
   const { value, onChange, ...rest } = props;
 
   const minutesRef = useRef<TextInput>(null);
+
   const validateTimeInput = (time: string, max: number): string => {
     if (!/^\d$/.test(time)) time = time.replace(/\D/g, "");
+    const parsedTime = parseInt(time);
     if (time.length === 2) {
       if (time[0] === "0") time = time[1];
-      else if (parseInt(time) > max) time = `${max}`;
-      else if (parseInt(time) < 0) time = "0";
+      if (parsedTime > max) time = `${max}`;
+      if (parsedTime < 0) time = "0";
     }
     return time;
   };
@@ -19,17 +21,17 @@ const OverlayTimeInput: React.FC<OverlayInputProps> = (props) => {
   const handleHoursChange = (hours: string) => {
     hours = validateTimeInput(hours, 23);
     if (hours.length == 2) minutesRef.current && minutesRef.current.focus();
-    onChange((prevState) => ({ ...prevState, hours }));
+    onChange({ hours });
   };
 
   const handleMinutesChange = (minutes: string) => {
     minutes = validateTimeInput(minutes, 59);
-    onChange((prevState) => ({ ...prevState, minutes }));
+    onChange({ minutes });
   };
 
   return (
     <View style={styles.container}>
-      <View style={[styles.wrapper, { marginRight: 16 }]}>
+      <View style={styles.wrapper}>
         <Text style={styles.label}>HOURS</Text>
         <TextInput
           {...rest}
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     marginBottom: 16,
+    // marginRight: 16,
   },
   wrapper: {
     flexGrow: 1,
@@ -89,4 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OverlayTimeInput;
+export default ModalTimeInput;

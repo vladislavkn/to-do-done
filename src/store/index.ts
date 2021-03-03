@@ -1,7 +1,6 @@
 import create from "zustand";
-import { State, Overlay, Todo } from "../types";
+import { State, Todo } from "../types";
 import { generateId } from "../utils";
-import { currentOverlaySelector } from "./selectors";
 import { persist } from "zustand/middleware";
 
 import config from "../../app.json";
@@ -13,51 +12,11 @@ const useStore = create<State>(
       todos: [],
       screen: "",
       categories: [],
-      overlays: [],
       selectedCategoryId: false,
       setSelectedCategoryId: (category) =>
         set(() => ({
           selectedCategoryId: category.id,
         })),
-      openOverlay: (overlayOptions) =>
-        set((state) => {
-          const overlay: Overlay = {
-            ...overlayOptions,
-            id: generateId(),
-            payload: {},
-            initialValue: overlayOptions?.initialValue ?? {},
-            placeholder: overlayOptions?.placeholder ?? "",
-            buttonGroups:
-              (overlayOptions?.buttonGroups?.filter(
-                Boolean
-              ) as Overlay["buttonGroups"]) ?? [],
-            autofocus: overlayOptions?.autofocus ?? false,
-          };
-
-          return {
-            overlays: [...state.overlays, overlay as Overlay],
-          };
-        }),
-      closeOverlay: () =>
-        set((state) => ({
-          overlays:
-            state.overlays.length > 0
-              ? state.overlays.slice(0, -1)
-              : state.overlays,
-        })),
-      setOverlayPayload: (payload) =>
-        set((state) => {
-          const overlay = currentOverlaySelector(state);
-          overlay.payload = {
-            ...overlay.payload,
-            ...payload,
-          } as Overlay["payload"];
-          return {
-            overlays: state.overlays.map((o) =>
-              o.id === overlay.id ? overlay : o
-            ),
-          };
-        }),
       updateTodo: (todo) =>
         set((state) => ({
           todos: state.todos.map((t) => (t.id === todo.id ? todo : t)),

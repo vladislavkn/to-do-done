@@ -1,8 +1,8 @@
 import React from "react";
 import { TextInput, StyleSheet } from "react-native";
-import { OverlayInputProps } from "../types";
+import { ModalInputProps } from "../types";
 
-const OverlayTextInput: React.FC<OverlayInputProps> = (props) => {
+const ModalTextInput: React.FC<ModalInputProps> = (props) => {
   const { value, onChange, ...rest } = props;
 
   return (
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OverlayTextInput;
+export default ModalTextInput;

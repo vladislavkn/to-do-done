@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { Todo, Category, OverlayButtonGroup } from "./types";
+import { Todo, Category, ModalButtonGroup } from "./types";
 
 export const sortTodos = (todos: Todo[]): Todo[] =>
   todos.sort((a: Todo, b: Todo) => a.from - b.from);
@@ -84,28 +84,30 @@ export const getCurrentHoursAndMinutes = () => {
   return createDate(date.getUTCHours(), date.getUTCMinutes());
 };
 
-export const timeButtonGroup: OverlayButtonGroup = {
+export const timeButtonGroup: ModalButtonGroup = {
   selectable: true,
   buttons: [5, 10, 20, 30, 60, 90, 120, 150, 180, 210].map((num) => {
     num = num * 60 * 1000;
     return {
-      buttonText: formatDuration(num),
-      fn: ({ setPayload, payload }) =>
-        setPayload({ duration: payload?.duration === num ? null : num }),
+      text: formatDuration(num),
+      onPress: (modal, update) => {
+        modal.value.duration = modal.value.duration === num ? null : num;
+        update(modal);
+      },
     };
   }),
 };
 
 export const createCategoriesGroup = (
   categories: Category[]
-): OverlayButtonGroup => ({
+): ModalButtonGroup => ({
   selectable: true,
   buttons: categories.map((category) => ({
-    buttonText: category.name,
-    fn: ({ setPayload, payload }) => {
-      setPayload({
-        categoryId: payload?.categoryId === category.id ? null : category.id,
-      });
+    text: category.name,
+    onPress: (modal, update) => {
+      modal.value.categoryId =
+        modal.value.categoryId === category.id ? null : category.id;
+      update(modal);
     },
   })),
 });

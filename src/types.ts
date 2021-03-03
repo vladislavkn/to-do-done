@@ -2,78 +2,13 @@ import { icons } from "./icons";
 
 export type IconName = keyof typeof icons;
 
-export type ArrayElement<
-  ArrayType extends readonly unknown[]
-> = ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
-
 export type StringKeyedObject = {
-  [key: string]: any;
-};
-
-type OverlayData = {
-  setPayload: State["setOverlayPayload"];
-  payload: StringKeyedObject;
-};
-
-export type OverlayCallback = (data: OverlayData) => void;
-
-export type OverlayButtonGroup = {
-  selectable: boolean;
-  buttons: {
-    buttonText: string;
-    iconProps?: {
-      name: IconName;
-      [key: string]: any;
-    };
-    fn: OverlayCallback;
-  }[];
-};
-
-export type Overlay = {
-  id: string;
-  autofocus: boolean;
-  placeholder: string;
-  payload: StringKeyedObject;
-  inputType: "time" | "text" | "none";
-  buttonGroups: OverlayButtonGroup[];
-  initialValue: StringKeyedObject;
-  submit?: OverlayCallback;
-};
-
-export type CreateOverlayOptions = Pick<Overlay, "inputType" | "submit"> &
-  Partial<Pick<Overlay, "placeholder" | "initialValue" | "autofocus">> & {
-    buttonGroups?: (ArrayElement<Overlay["buttonGroups"]> | boolean)[];
-  };
-
-export type OverlayInputProps = {
-  value: StringKeyedObject;
-  onChange: (value: React.SetStateAction<OverlayInputProps["value"]>) => void;
   [key: string]: any;
 };
 
 export type Category = {
   name: string;
   id: string;
-};
-
-export type State = {
-  todos: Todo[];
-  overlays: Overlay[];
-  categories: Category[];
-  screen: string;
-  selectedCategoryId: string | boolean;
-  setSelectedCategoryId: (category: Category) => void;
-  navigate: (screen: string) => void;
-  openOverlay: (overlay: CreateOverlayOptions) => void;
-  setOverlayPayload: (payload: Partial<Overlay["payload"]>) => void;
-  closeOverlay: () => void;
-  updateTodo: (todo: Todo) => void;
-  removeTodo: (todo: Todo) => void;
-  removeTodos: (fn: (todo: Todo) => Boolean) => void;
-  addTodo: (todo: Todo) => void;
-  addCategory: (category: string) => void;
-  updateCategory: (category: Category) => void;
-  removeCategory: (category: Category) => void;
 };
 
 export type Todo = {
@@ -87,7 +22,32 @@ export type Todo = {
   today: boolean;
 };
 
+/* State */
+
+export type State = {
+  screen: string;
+  navigate: (screen: string) => void;
+
+  todos: Todo[];
+  updateTodo: (todo: Todo) => void;
+  removeTodo: (todo: Todo) => void;
+  removeTodos: (fn: (todo: Todo) => Boolean) => void;
+  addTodo: (todo: Todo) => void;
+
+  categories: Category[];
+  addCategory: (category: string) => void;
+  updateCategory: (category: Category) => void;
+  removeCategory: (category: Category) => void;
+  selectedCategoryId: string | boolean;
+  setSelectedCategoryId: (category: Category) => void;
+};
+
 /* Modal */
+
+export type ModalInputProps = {
+  value: ModalValue;
+  onChange: (value: Partial<ModalValue>) => void;
+} & StringKeyedObject;
 
 export type ModalTextValue = {
   text: string;
@@ -100,7 +60,10 @@ export type ModalTimeValue = {
 
 export type ModalValue = Partial<ModalTextValue | ModalTimeValue>;
 
-type ModalCallback = (modal: Modal) => void;
+export type ModalCallback = (
+  modal: Modal,
+  update: ModalState["update"]
+) => void;
 
 export type ModalButtonGroup = {
   selectable: boolean;
@@ -122,12 +85,12 @@ export type Modal = {
   id: string;
   buttonGroups: ModalButtonGroup[];
   inputType: ModalInputType;
-  autofocus: boolean;
+  autoFocus: boolean;
   submit?: ModalCallback;
   placeholder: string;
 };
 
-export type CreateModalOptions = Partial<Modal> & {
+export type CreateModalOptions = Partial<Omit<Modal, "buttonGroups">> & {
   buttonGroups?: (ModalButtonGroup | boolean)[];
   initialValue?: ModalValue;
 };

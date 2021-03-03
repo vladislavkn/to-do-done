@@ -13,32 +13,33 @@ import { useModalStore } from "./store/modal";
 
 export const showAddTodoOverlay = (today = false) => {
   const state = useStore.getState();
+  const modalState = useModalStore.getState();
   if (!today && state.categories.length === 0) {
     alert("First create at least one category.");
     return;
   }
 
-  state.openOverlay({
+  modalState.push({
     placeholder: "New todo",
     inputType: "text",
-    autofocus: true,
-    submit({ payload }) {
-      if (payload.value.text.length > 0) {
+    autoFocus: true,
+    submit(modal) {
+      if (modal.value.text.length > 0) {
         const todo = {
-          title: payload.value.text,
+          title: modal.value.text,
           done: false,
           id: generateId(),
           from: endTimeSelector(state),
-          duration: payload?.duration ?? 0,
+          duration: modal.value.duration ?? 0,
           categoryId:
-            payload?.categoryId ?? (!today ? state.selectedCategoryId : ""),
+            modal.value.categoryId ?? (!today ? state.selectedCategoryId : ""),
           time: "",
           today,
         } as Todo;
         todo.time = formatTime(todo.from, todo.duration);
 
         state.addTodo(todo);
-        state.closeOverlay();
+        modalState.pop();
       }
     },
     buttonGroups: [
@@ -52,23 +53,24 @@ export const showAddTodoOverlay = (today = false) => {
 
 export const showEditTodoOverlay = (todo: Todo) => {
   const state: State = useStore.getState();
+  const modalState = useModalStore.getState();
 
-  state.openOverlay({
+  modalState.push({
     placeholder: "Todo text",
     initialValue: { text: todo.title },
     inputType: "text",
-    submit({ payload }) {
-      if (payload.value.text.length > 0) {
-        todo.title = payload.value.text;
-        if (payload.duration) {
-          todo.duration = payload.duration;
+    submit(modal) {
+      if (modal.value.text.length > 0) {
+        todo.title = modal.value.text;
+        if (modal.value.duration) {
+          todo.duration = modal.value.duration;
           todo.time = formatTime(todo.from, todo.duration);
         }
-        if (payload.categoryId) {
-          todo.categoryId = payload.categoryId;
+        if (modal.value.categoryId) {
+          todo.categoryId = modal.value.categoryId;
         }
         state.updateTodo(todo);
-        state.closeOverlay();
+        modalState.pop();
       }
     },
     buttonGroups: [
@@ -78,33 +80,34 @@ export const showEditTodoOverlay = (todo: Todo) => {
         selectable: false,
         buttons: [
           {
-            buttonText: "Change time",
+            text: "Change time",
             iconProps: {
               name: "time",
               width: 12,
               height: 12,
             },
-            fn() {
+            onPress() {
               showUpdateTimeOverlay((time) => {
                 todo.from = time;
                 todo.time = formatTime(todo.from, todo.duration);
                 state.updateTodo(todo);
-                state.closeOverlay();
+                modalState.pop();
               });
             },
           },
 
           {
-            buttonText: todo.today ? "Remove from today" : "Move to today",
+            text: todo.today ? "Remove from today" : "Move to today",
             iconProps: {
               name: todo.today ? "remove" : "move",
               width: 12,
               height: 12,
             },
-            fn: () => {
+            onPress: () => {
               if (todo.categoryId.length > 0) {
                 todo.today = !todo.today;
-                state.updateTodo(todo), state.closeOverlay();
+                state.updateTodo(todo);
+                modalState.pop();
               } else {
                 Alert.alert(
                   "Remove task",
@@ -114,7 +117,7 @@ export const showEditTodoOverlay = (todo: Todo) => {
                       text: "Remove",
                       onPress: () => {
                         state.removeTodo(todo);
-                        state.closeOverlay();
+                        modalState.pop();
                       },
                     },
                     {
@@ -128,15 +131,15 @@ export const showEditTodoOverlay = (todo: Todo) => {
             },
           },
           {
-            buttonText: "Delete",
+            text: "Delete",
             iconProps: {
               name: "delete",
               width: 10,
               height: 12,
             },
-            fn() {
+            onPress() {
               state.removeTodo(todo);
-              state.closeOverlay();
+              modalState.pop();
             },
           },
         ],
@@ -146,39 +149,20 @@ export const showEditTodoOverlay = (todo: Todo) => {
 };
 
 const showUpdateTimeOverlay = (callback: (time: number) => void) => {
-  const state: State = useStore.getState();
+  const modalState = useModalStore.getState();
 
-  state.openOverlay({
+  modalState.push({
     inputType: "time",
-    autofocus: true,
-    submit({ payload }) {
-      if (
-        payload?.value?.minutes?.length > 0 &&
-        payload?.value?.hours?.length > 0
-      ) {
-        const date = createDate(payload.value.hours, payload.value.minutes);
+    autoFocus: true,
+    submit(modal) {
+      if (modal.value.minutes.length > 0 || modal.value.hours.length > 0) {
+        const date = createDate(modal.value.hours, modal.value.minutes);
+        modalState.pop();
         callback(date.getTime());
-        state.closeOverlay();
       }
     },
   });
 };
-
-// export const showAddCategoryOverlay = () => {
-//   const state: State = useStore.getState();
-
-//   state.openOverlay({
-//     inputType: "text",
-//     autofocus: true,
-//     placeholder: "New Category",
-//     submit({ payload }) {
-//       if (payload.value.text.length > 0) {
-//         state.addCategory(payload.value.text);
-//         state.closeOverlay();
-//       }
-//     },
-//   });
-// };
 
 export const showAddCategoryOverlay = () => {
   const modalState = useModalStore.getState();
@@ -187,7 +171,7 @@ export const showAddCategoryOverlay = () => {
   modalState.push({
     inputType: "text",
     placeholder: "New category",
-    autofocus: true,
+    autoFocus: true,
     submit(modal) {
       if (modal.value.text.length > 0) {
         state.addCategory(modal.value.text);
@@ -199,16 +183,17 @@ export const showAddCategoryOverlay = () => {
 
 export const showEditCategoryOverlay = (category: Category) => {
   const state = useStore.getState();
+  const modalState = useModalStore.getState();
 
-  state.openOverlay({
+  modalState.push({
     inputType: "text",
     placeholder: "Category name",
     initialValue: { text: category.name },
-    submit({ payload }) {
-      if (payload.value.text.length > 0) {
-        category.name = payload.value.text;
+    submit(modal) {
+      if (modal.value.text.length > 0) {
+        category.name = modal.value.text;
         state.updateCategory(category);
-        state.closeOverlay();
+        modalState.pop();
       }
     },
     buttonGroups: [
@@ -216,15 +201,15 @@ export const showEditCategoryOverlay = (category: Category) => {
         selectable: false,
         buttons: [
           {
-            buttonText: "Delete",
+            text: "Delete",
             iconProps: {
               name: "delete",
               width: 12,
               height: 12,
             },
-            fn() {
+            onPress() {
               state.removeCategory(category);
-              state.closeOverlay();
+              modalState.pop();
             },
           },
         ],
@@ -235,16 +220,17 @@ export const showEditCategoryOverlay = (category: Category) => {
 
 export const showOptionsOverlay = () => {
   const state = useStore.getState();
+  const modalState = useModalStore.getState();
 
-  state.openOverlay({
+  modalState.push({
     inputType: "none",
     buttonGroups: [
       {
         selectable: false,
         buttons: [
           {
-            buttonText: "Remove done tasks",
-            fn() {
+            text: "Remove done tasks",
+            onPress() {
               Alert.alert(
                 "Remove done tasks",
                 "Remove all completed tasks? You will not be able to restore them.",
@@ -252,16 +238,14 @@ export const showOptionsOverlay = () => {
                   {
                     text: "Remove",
                     onPress() {
-                      if (state.screen === "TodayTodoListPage") {
-                        state.removeTodos((t) => t.today && t.done);
-                        state.closeOverlay();
-                      } else {
-                        state.removeTodos(
-                          (t) =>
-                            t.categoryId === state.selectedCategoryId && t.done
-                        );
-                        state.closeOverlay();
-                      }
+                      state.removeTodos(
+                        (t) =>
+                          (state.screen === "TodayTodoListPage"
+                            ? t.today
+                            : t.categoryId === state.selectedCategoryId) &&
+                          t.done
+                      );
+                      modalState.pop();
                     },
                   },
                   {
@@ -274,8 +258,8 @@ export const showOptionsOverlay = () => {
             },
           },
           {
-            buttonText: "Remove All tasks",
-            fn() {
+            text: "Remove All tasks",
+            onPress() {
               Alert.alert(
                 "Remove all tasks",
                 "Remove all tasks? You will not be able to restore them.",
@@ -283,15 +267,12 @@ export const showOptionsOverlay = () => {
                   {
                     text: "Remove",
                     onPress() {
-                      if (state.screen === "TodayTodoListPage") {
-                        state.removeTodos((t) => t.today);
-                        state.closeOverlay();
-                      } else {
-                        state.removeTodos(
-                          (t) => t.categoryId === state.selectedCategoryId
-                        );
-                        state.closeOverlay();
-                      }
+                      state.removeTodos((t) =>
+                        state.screen === "TodayTodoListPage"
+                          ? t.today
+                          : t.categoryId === state.selectedCategoryId
+                      );
+                      modalState.pop();
                     },
                   },
                   {

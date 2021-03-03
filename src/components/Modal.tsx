@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Pressable,
   View,
   ScrollView,
   TouchableNativeFeedback,
@@ -10,15 +9,20 @@ import {
 } from "react-native";
 import { useModalStore } from "../store/modal";
 import { topModalSelector } from "../store/selectors";
-import { ModalButtonGroup, ModalInputType, ModalValue } from "../types";
+import {
+  ModalButtonGroup,
+  ModalInputType,
+  ModalValue,
+  ModalCallback,
+} from "../types";
 import Icon from "./Icon";
-import OverlayTextInput from "./OverlayTextInput";
-import OverlayTimeInput from "./OverlayTimeInput";
+import ModalTextInput from "./ModalTextInput";
+import ModalTimeInput from "./ModalTimeInput";
 
 const getInputComponent = (inputType: ModalInputType) => {
   return {
-    time: OverlayTimeInput,
-    text: OverlayTextInput,
+    time: ModalTimeInput,
+    text: ModalTextInput,
     none: (() => null) as React.FC,
   }[inputType];
 };
@@ -28,13 +32,15 @@ const Modal = () => {
   const [update, pop] = useModalStore((state) => [state.update, state.pop]);
   const ModalInput = getInputComponent(modal.inputType);
 
+  const handleCallback = (fn?: ModalCallback) => fn && fn(modal, update);
+
   const handleButtonPress = (
     group: ModalButtonGroup,
     index: number,
     text: string
   ) => {
     const fn = group.buttons.find((b) => b.text === text)?.onPress;
-    fn && fn(modal);
+    handleCallback(fn);
     group.selectable && (group.selected = text);
     modal.buttonGroups[index] = group;
     update(modal);
@@ -45,17 +51,22 @@ const Modal = () => {
     update(modal);
   };
 
+  const handleClose = () => {
+    handleCallback(modal.submit);
+    pop();
+  };
+
   return (
-    <TouchableWithoutFeedback onPress={pop}>
+    <TouchableWithoutFeedback onPress={handleClose}>
       <View style={styles.backdrop}>
         <View style={styles.container}>
           <ModalInput
             value={modal.value}
             onChange={handleValueChange}
-            onSubmitEditing={() => modal.submit && modal.submit(modal)}
+            onSubmitEditing={() => handleCallback(modal.submit)}
             placeholderTextColor="#999"
             selectionColor="rgba(85,85,85,0.2)"
-            autoFocus={modal.inputType === "text" && modal.autofocus}
+            autoFocus={modal.autoFocus}
             placeholder={modal.inputType === "text" ? modal.placeholder : null}
           />
           {modal.buttonGroups.map((group, groupIndex) => (
