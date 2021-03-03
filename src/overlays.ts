@@ -9,6 +9,7 @@ import {
 } from "./utils";
 import { endTimeSelector } from "./store/selectors";
 import { Alert } from "react-native";
+import { useModalStore } from "./store/modal";
 
 export const showAddTodoOverlay = (today = false) => {
   const state = useStore.getState();
@@ -163,17 +164,34 @@ const showUpdateTimeOverlay = (callback: (time: number) => void) => {
   });
 };
 
-export const showAddCategoryOverlay = () => {
-  const state: State = useStore.getState();
+// export const showAddCategoryOverlay = () => {
+//   const state: State = useStore.getState();
 
-  state.openOverlay({
+//   state.openOverlay({
+//     inputType: "text",
+//     autofocus: true,
+//     placeholder: "New Category",
+//     submit({ payload }) {
+//       if (payload.value.text.length > 0) {
+//         state.addCategory(payload.value.text);
+//         state.closeOverlay();
+//       }
+//     },
+//   });
+// };
+
+export const showAddCategoryOverlay = () => {
+  const modalState = useModalStore.getState();
+  const state = useStore.getState();
+
+  modalState.push({
     inputType: "text",
+    placeholder: "New category",
     autofocus: true,
-    placeholder: "New Category",
-    submit({ payload }) {
-      if (payload.value.text.length > 0) {
-        state.addCategory(payload.value.text);
-        state.closeOverlay();
+    submit(modal) {
+      if (modal.value.text.length > 0) {
+        state.addCategory(modal.value.text);
+        modalState.pop();
       }
     },
   });

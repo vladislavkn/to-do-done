@@ -15,6 +15,7 @@ import TodayTodoListPage from "./src/pages/TodayTodoListPage";
 import CategorizedTodosPage from "./src/pages/CategorizedTodosPage";
 import RouterView from "./src/components/RouterView";
 import OverlayWrapper from "./src/components/OverlayWrapper";
+import ModalWrapper from "./src/components/ModalWrapper";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -35,7 +36,9 @@ export default function App() {
         routes={{ TodayTodoListPage, CategorizedTodosPage }}
         initial="TodayTodoListPage"
       />
+      <ModalWrapper />
       <OverlayWrapper />
+
       <Menu />
     </View>
   );

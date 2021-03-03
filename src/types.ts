@@ -86,3 +86,55 @@ export type Todo = {
   time: string;
   today: boolean;
 };
+
+/* Modal */
+
+export type ModalTextValue = {
+  text: string;
+} & StringKeyedObject;
+
+export type ModalTimeValue = {
+  minutes: string;
+  hours: string;
+} & StringKeyedObject;
+
+export type ModalValue = Partial<ModalTextValue | ModalTimeValue>;
+
+type ModalCallback = (modal: Modal) => void;
+
+export type ModalButtonGroup = {
+  selectable: boolean;
+  selected?: string;
+  buttons: {
+    text: string;
+    iconProps?: {
+      name: IconName;
+      [key: string]: any;
+    };
+    onPress: ModalCallback;
+  }[];
+};
+
+export type ModalInputType = "text" | "time" | "none";
+
+export type Modal = {
+  value: ModalValue;
+  id: string;
+  buttonGroups: ModalButtonGroup[];
+  inputType: ModalInputType;
+  autofocus: boolean;
+  submit?: ModalCallback;
+  placeholder: string;
+};
+
+export type CreateModalOptions = Partial<Modal> & {
+  buttonGroups?: (ModalButtonGroup | boolean)[];
+  initialValue?: ModalValue;
+};
+
+export type ModalState = {
+  stack: Modal[];
+  push: (createModalOptions: CreateModalOptions) => void;
+  pop: () => void;
+  update: (modal: Modal) => void;
+};

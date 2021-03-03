@@ -1,4 +1,4 @@
-import { State } from "../types";
+import { ModalState, State } from "../types";
 import { getCurrentHoursAndMinutes, sortTodos } from "../utils";
 
 export const hasOverlaysSelector = (state: State): boolean =>
@@ -34,3 +34,9 @@ export const selectedCategorySortedTodosSelector = (state: State) =>
   sortTodos(
     categorizedTodosSelector(currentCategoryNameSelector(state))(state)
   );
+
+/* ModalState */
+
+export const hasModalsSelector = (state: ModalState) => state.stack.length > 0;
+export const topModalSelector = (state: ModalState) =>
+  state.stack[state.stack.length - 1];
