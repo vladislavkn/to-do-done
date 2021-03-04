@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { Todo, Category, ModalButtonGroup } from "./types";
+import { Todo, Category, ModalButtonGroup, ModalButton } from "./types";
 
 export const sortTodos = (todos: Todo[]): Todo[] =>
   todos.sort((a: Todo, b: Todo) => a.from - b.from);
@@ -40,7 +40,7 @@ export const getFormattedDate = (): string => {
   return `${currentDate.getDate()} of ${currentMonth}, ${currentWeekday}`;
 };
 
-const formatDuration = (duration: number) => {
+export const formatDuration = (duration: number) => {
   const durationHours = Math.floor(duration / 1000 / 3600),
     durationMinutes = Math.floor(((duration / 1000) % 3600) / 60);
   return `${durationHours > 0 ? `${durationHours}h` : ""}${
@@ -49,28 +49,21 @@ const formatDuration = (duration: number) => {
 };
 
 export const formatTime = (from: number, duratuion: number) => {
-  if (from <= 0 && duratuion <= 0) return "";
+  if (from <= 0 || duratuion <= 0) return "";
 
   const fromDate = new Date(from),
-    toDate = new Date(from + duratuion),
+    endDate = new Date(from + duratuion),
     fromHours = fromDate.getUTCHours(),
     fromMinutes = fromDate.getUTCMinutes(),
-    toHours = toDate.getUTCHours(),
-    toMinutes = toDate.getUTCMinutes(),
+    endHours = endDate.getUTCHours(),
+    endMinutes = endDate.getUTCMinutes(),
     durationString = duratuion > 0 ? formatDuration(duratuion) : "",
-    timeStartString =
-      from > 0
-        ? `${fromHours}:${fromMinutes < 10 ? "0" : ""}${fromMinutes}`
-        : "",
-    timeEndString =
-      from > 0 && duratuion > 0
-        ? `${toHours}:${toMinutes < 10 ? "0" : ""}${toMinutes}`
-        : "";
+    timeStartString = `${fromHours}:${
+      fromMinutes < 10 ? "0" : ""
+    }${fromMinutes}`,
+    timeEndString = `${endHours}:${endMinutes < 10 ? "0" : ""}${endMinutes}`;
 
-  if (from > 0 && duratuion > 0)
-    return `${durationString} | ${timeStartString}-${timeEndString}`;
-  if (duratuion > 0) return durationString;
-  return timeStartString;
+  return `${durationString} | ${timeStartString}-${timeEndString}`;
 };
 
 export const createDate = (hours: number, minutes: number) => {
@@ -83,31 +76,3 @@ export const getCurrentHoursAndMinutes = () => {
   const date = new Date();
   return createDate(date.getUTCHours(), date.getUTCMinutes());
 };
-
-export const timeButtonGroup: ModalButtonGroup = {
-  selectable: true,
-  buttons: [5, 10, 20, 30, 60, 90, 120, 150, 180, 210].map((num) => {
-    num = num * 60 * 1000;
-    return {
-      text: formatDuration(num),
-      onPress: (modal, update) => {
-        modal.value.duration = modal.value.duration === num ? null : num;
-        update(modal);
-      },
-    };
-  }),
-};
-
-export const createCategoriesGroup = (
-  categories: Category[]
-): ModalButtonGroup => ({
-  selectable: true,
-  buttons: categories.map((category) => ({
-    text: category.name,
-    onPress: (modal, update) => {
-      modal.value.categoryId =
-        modal.value.categoryId === category.id ? null : category.id;
-      update(modal);
-    },
-  })),
-});

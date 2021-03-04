@@ -6,14 +6,16 @@ import {
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
+  GestureResponderEvent,
 } from "react-native";
 import { useModalStore } from "../store/modal";
 import { topModalSelector } from "../store/selectors";
 import {
-  ModalButtonGroup,
   ModalInputType,
   ModalValue,
   ModalCallback,
+  ModalButtonGroup,
+  ModalSubmit,
 } from "../types";
 import Icon from "./Icon";
 import ModalTextInput from "./ModalTextInput";
@@ -32,28 +34,20 @@ const Modal = () => {
   const [update, pop] = useModalStore((state) => [state.update, state.pop]);
   const ModalInput = getInputComponent(modal.inputType);
 
-  const handleCallback = (fn?: ModalCallback) => fn && fn(modal, update);
-
-  const handleButtonPress = (
-    group: ModalButtonGroup,
-    index: number,
-    text: string
-  ) => {
-    const fn = group.buttons.find((b) => b.text === text)?.onPress;
-    handleCallback(fn);
-    group.selectable && (group.selected = text);
-    modal.buttonGroups[index] = group;
-    update(modal);
-  };
+  const handleSubmit = (fn?: ModalSubmit) => fn && fn(modal, update);
+  const handleButtonPress = (fn: ModalCallback, group: ModalButtonGroup) =>
+    fn && fn(modal, update, group);
 
   const handleValueChange = (value: ModalValue) => {
     modal.value = { ...modal.value, ...value };
     update(modal);
   };
 
-  const handleClose = () => {
-    handleCallback(modal.submit);
-    pop();
+  const handleClose = (e: GestureResponderEvent) => {
+    if (e.target === e.currentTarget) {
+      handleSubmit(modal.submit);
+      pop();
+    }
   };
 
   return (
@@ -63,7 +57,7 @@ const Modal = () => {
           <ModalInput
             value={modal.value}
             onChange={handleValueChange}
-            onSubmitEditing={() => handleCallback(modal.submit)}
+            onSubmitEditing={() => handleSubmit(modal.submit)}
             placeholderTextColor="#999"
             selectionColor="rgba(85,85,85,0.2)"
             autoFocus={modal.autoFocus}
@@ -77,27 +71,31 @@ const Modal = () => {
               showsHorizontalScrollIndicator={false}
               horizontal
             >
-              {group.buttons.map(({ text, iconProps = null }, buttonIndex) => (
-                <TouchableNativeFeedback
-                  key={text}
-                  onPress={() => handleButtonPress(group, groupIndex, text)}
-                >
-                  <View
-                    style={[
-                      styles.button,
-                      group.selected === text && styles.selectedButton,
-                      buttonIndex !== group.buttons.length - 1 && {
-                        marginRight: 16,
-                      },
-                    ]}
+              {group.buttons.map(
+                ({ text, iconProps = null, onPress }, buttonIndex) => (
+                  <TouchableNativeFeedback
+                    key={text}
+                    onPress={() => handleButtonPress(onPress, group)}
                   >
-                    {iconProps ? (
-                      <Icon style={styles.icon} {...iconProps} />
-                    ) : null}
-                    <Text style={styles.buttonText}>{text}</Text>
-                  </View>
-                </TouchableNativeFeedback>
-              ))}
+                    <View
+                      style={[
+                        styles.button,
+                        group.selected === text &&
+                          group.selectable &&
+                          styles.selectedButton,
+                        buttonIndex !== group.buttons.length - 1 && {
+                          marginRight: 16,
+                        },
+                      ]}
+                    >
+                      {iconProps ? (
+                        <Icon style={styles.icon} {...iconProps} />
+                      ) : null}
+                      <Text style={styles.buttonText}>{text}</Text>
+                    </View>
+                  </TouchableNativeFeedback>
+                )
+              )}
               <View style={{ width: 24 }}></View>
             </ScrollView>
           ))}
