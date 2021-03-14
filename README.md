@@ -10,7 +10,7 @@ cd to-do-done
 yarn
 yarn start
 ```
-## Screenshots
+## 📸 Screenshots
 
 
 ![Create plans](https://github.com/vladislavkn/to-do-done/blob/master/repo-images/1.png)
