@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, TouchableNativeFeedback, View } from "react-native";
-import Icon from "../../common/components/Icon";
-import { showOptionsModal } from "../../modal/modals";
+import Icon from "@/common/components/Icon";
+import { showOptionsModal } from "@/modal/modals";
 import useStore from "../store";
-import { getFormattedDate } from "../../../utils";
+import { getFormattedDate } from "@src/utils";
 
 const Navigation: React.FC = () => (
   <View style={styles.container}>

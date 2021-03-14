@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { TextInput, StyleSheet, View, Text } from "react-native";
-import { ModalInputProps } from "../../../types";
+import { ModalInputProps } from "@src/types";
 
 const ModalTimeInput: React.FC<ModalInputProps> = (props) => {
   const { value, onChange, ...rest } = props;

@@ -1,6 +1,6 @@
 import React from "react";
 import { TextInput, StyleSheet } from "react-native";
-import { ModalInputProps } from "../../../types";
+import { ModalInputProps } from "@src/types";
 
 const ModalTextInput: React.FC<ModalInputProps> = (props) => {
   const { value, onChange, ...rest } = props;

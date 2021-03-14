@@ -15,11 +15,11 @@ import {
   ModalCallback,
   ModalButtonGroup,
   ModalSubmit,
-} from "../../../types";
+} from "@src/types";
 import ModalTextInput from "./ModalTextInput";
 import ModalTimeInput from "./ModalTimeInput";
 import { topModalSelector } from "../selectors";
-import Icon from "../../common/components/Icon";
+import Icon from "@/common/components/Icon";
 
 const getInputComponent = (inputType: ModalInputType) => {
   return {

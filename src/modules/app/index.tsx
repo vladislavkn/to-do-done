@@ -6,7 +6,7 @@ import { Dimensions, StyleSheet, View } from "react-native";
 
 import Navigation from "./components/Navigation";
 import RouterView from "./components/RouterView";
-import ModalWrapper from "../modal";
+import ModalWrapper from "@/modal";
 import Menu from "./components/Menu";
 import routes, { initialRoute } from "./routes";
 import useFontsLoad from "./hooks/useFontsLoad";

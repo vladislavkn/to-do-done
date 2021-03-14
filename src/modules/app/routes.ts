@@ -1,5 +1,5 @@
-import TodayTodoListPage from "../TodayTodolistPage";
-import CategorizedTodosPage from "../TodayTodolistPage";
+import TodayTodoListPage from "@/todayTodolistPage";
+import CategorizedTodosPage from "@/categoriesPage";
 
 export default {
   TodayTodoListPage,

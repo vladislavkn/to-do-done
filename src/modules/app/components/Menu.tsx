@@ -8,8 +8,8 @@ import {
 } from "react-native";
 
 import useStore from "../store";
-import Icon from "../../common/components/Icon";
-import { showAddTodoModal } from "../../modal/modals";
+import Icon from "@/common/components/Icon";
+import { showAddTodoModal } from "@/modal/modals";
 
 const Menu = () => {
   const [navigate, screen] = useStore((state) => [

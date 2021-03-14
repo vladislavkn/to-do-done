@@ -1,10 +1,10 @@
 import React from "react";
 import { ScrollView } from "react-native";
 import Categories from "./components/Categories";
-import useStore from "../app/store";
-import { showEditCategoryModal } from "../modal/modals";
-import TodoList from "../todolist/components/TodoList";
-import { selectedCategorySortedTodosSelector } from "../app/selectors";
+import useStore from "@/app/store";
+import { showEditCategoryModal } from "@/modal/modals";
+import TodoList from "@/todolist/components/TodoList";
+import { selectedCategorySortedTodosSelector } from "@/app/selectors";
 
 const CategorizedTodosPage = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useStore((state) => [

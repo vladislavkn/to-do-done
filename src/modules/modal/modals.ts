@@ -5,16 +5,16 @@ import {
   ModalState,
   State,
   Todo,
-} from "../../types";
-import useStore from "../app/store";
+} from "@src/types";
+import useStore from "@/app/store";
 import {
   formatTime,
   generateId,
   createDate,
   formatDuration,
   showConfirmationAlert,
-} from "../../utils";
-import { endTimeSelector } from "../app/selectors";
+} from "@src/utils";
+import { endTimeSelector } from "@/app/selectors";
 import { useModalStore } from "./store";
 
 export const createTimeButtonGroup = (

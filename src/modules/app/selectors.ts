@@ -1,5 +1,5 @@
-import { State } from "../../types";
-import { getCurrentHoursAndMinutes, sortTodos } from "../../utils";
+import { State } from "@src/types";
+import { getCurrentHoursAndMinutes, sortTodos } from "@src/utils";
 
 export const sortedTodayTodosSelector = (state: State) =>
   sortTodos(state.todos.filter((t) => t.today));
