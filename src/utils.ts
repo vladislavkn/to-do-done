@@ -1,6 +1,7 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 import { Todo, Category, ModalButtonGroup, ModalButton } from "./types";
+import { Alert } from "react-native";
 
 export const sortTodos = (todos: Todo[]): Todo[] =>
   todos.sort((a: Todo, b: Todo) => a.from - b.from);
@@ -76,3 +77,24 @@ export const getCurrentHoursAndMinutes = () => {
   const date = new Date();
   return createDate(date.getUTCHours(), date.getUTCMinutes());
 };
+
+export const showConfirmationAlert = (
+  title: string,
+  text: string,
+  cb: () => void
+) =>
+  Alert.alert(
+    title,
+    text,
+    [
+      {
+        text: "Confirm",
+        onPress: cb,
+      },
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+    ],
+    { cancelable: true }
+  );

@@ -7,9 +7,14 @@ import {
   Todo,
 } from "./types";
 import useStore from "./store";
-import { formatTime, generateId, createDate, formatDuration } from "./utils";
+import {
+  formatTime,
+  generateId,
+  createDate,
+  formatDuration,
+  showConfirmationAlert,
+} from "./utils";
 import { endTimeSelector } from "./store/selectors";
-import { Alert } from "react-native";
 import { useModalStore } from "./store/modal";
 
 export const createTimeButtonGroup = (
@@ -162,23 +167,13 @@ export const showEditTodoModal = (todo: Todo) => {
                 state.updateTodo(todo);
                 modalState.pop();
               } else {
-                Alert.alert(
+                showConfirmationAlert(
                   "Remove task",
                   "That task has no category and will be removed.",
-                  [
-                    {
-                      text: "Remove",
-                      onPress: () => {
-                        state.removeTodo(todo);
-                        modalState.pop();
-                      },
-                    },
-                    {
-                      text: "Cancel",
-                      style: "cancel",
-                    },
-                  ],
-                  { cancelable: true }
+                  () => {
+                    state.removeTodo(todo);
+                    modalState.pop();
+                  }
                 );
               }
             },
@@ -285,59 +280,36 @@ export const showOptionsModal = () => {
         buttons: [
           {
             text: "Remove done tasks",
-            onPress() {
-              Alert.alert(
+            onPress: () =>
+              showConfirmationAlert(
                 "Remove done tasks",
                 "Remove all completed tasks? You will not be able to restore them.",
-                [
-                  {
-                    text: "Remove",
-                    onPress() {
-                      state.removeTodos(
-                        (t) =>
-                          (state.screen === "TodayTodoListPage"
-                            ? t.today
-                            : t.categoryId === state.selectedCategoryId) &&
-                          t.done
-                      );
-                      modalState.pop();
-                    },
-                  },
-                  {
-                    text: "Cancel",
-                    style: "cancel",
-                  },
-                ],
-                { cancelable: true }
-              );
-            },
+                () => {
+                  state.removeTodos(
+                    (t) =>
+                      (state.screen === "TodayTodoListPage"
+                        ? t.today
+                        : t.categoryId === state.selectedCategoryId) && t.done
+                  );
+                  modalState.pop();
+                }
+              ),
           },
           {
             text: "Remove All tasks",
-            onPress() {
-              Alert.alert(
+            onPress: () =>
+              showConfirmationAlert(
                 "Remove all tasks",
                 "Remove all tasks? You will not be able to restore them.",
-                [
-                  {
-                    text: "Remove",
-                    onPress() {
-                      state.removeTodos((t) =>
-                        state.screen === "TodayTodoListPage"
-                          ? t.today
-                          : t.categoryId === state.selectedCategoryId
-                      );
-                      modalState.pop();
-                    },
-                  },
-                  {
-                    text: "Cancel",
-                    style: "cancel",
-                  },
-                ],
-                { cancelable: true }
-              );
-            },
+                () => {
+                  state.removeTodos((t) =>
+                    state.screen === "TodayTodoListPage"
+                      ? t.today
+                      : t.categoryId === state.selectedCategoryId
+                  );
+                  modalState.pop();
+                }
+              ),
           },
         ],
       },
