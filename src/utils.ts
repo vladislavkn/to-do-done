@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { Todo, Category, ModalButtonGroup, ModalButton } from "./types";
+import { Todo } from "./types";
 import { Alert } from "react-native";
 
 export const sortTodos = (todos: Todo[]): Todo[] =>

@@ -1,9 +1,9 @@
 import create from "zustand";
-import { State, Todo } from "../types";
-import { generateId } from "../utils";
+import { State, Todo } from "../../types";
+import { generateId } from "../../utils";
 import { persist } from "zustand/middleware";
 
-import config from "../../app.json";
+import config from "../../../app.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useStore = create<State>(

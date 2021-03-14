@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { TextInput, StyleSheet, View, Text } from "react-native";
-import { ModalInputProps } from "../types";
+import { ModalInputProps } from "../../../types";
 
 const ModalTimeInput: React.FC<ModalInputProps> = (props) => {
   const { value, onChange, ...rest } = props;
@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     marginBottom: 16,
-    // marginRight: 16,
   },
   wrapper: {
     flexGrow: 1,

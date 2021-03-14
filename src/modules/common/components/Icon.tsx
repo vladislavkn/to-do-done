@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgXml } from "react-native-svg";
 import { icons } from "../icons";
-import { IconName } from "../types";
+import { IconName } from "../../../types";
 
 type IconProps = {
   name: IconName;

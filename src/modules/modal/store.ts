@@ -6,8 +6,8 @@ import {
   ModalTextValue,
   ModalInputType,
   ModalButtonGroup,
-} from "../types";
-import { generateId } from "../utils";
+} from "../../types";
+import { generateId } from "../../utils";
 
 const getTextInitialValue = (): ModalTextValue => ({
   text: "",

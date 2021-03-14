@@ -8,18 +8,18 @@ import {
   TouchableWithoutFeedback,
   GestureResponderEvent,
 } from "react-native";
-import { useModalStore } from "../store/modal";
-import { topModalSelector } from "../store/selectors";
+import { useModalStore } from "../store";
 import {
   ModalInputType,
   ModalValue,
   ModalCallback,
   ModalButtonGroup,
   ModalSubmit,
-} from "../types";
-import Icon from "./Icon";
+} from "../../../types";
 import ModalTextInput from "./ModalTextInput";
 import ModalTimeInput from "./ModalTimeInput";
+import { topModalSelector } from "../selectors";
+import Icon from "../../common/components/Icon";
 
 const getInputComponent = (inputType: ModalInputType) => {
   return {

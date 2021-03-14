@@ -6,9 +6,9 @@ import {
   TouchableNativeFeedback,
   StyleSheet,
 } from "react-native";
-import { showAddCategoryModal } from "../modals";
-import { Category, State } from "../types";
-import Icon from "./Icon";
+import { Category, State } from "../../../types";
+import Icon from "../../common/components/Icon";
+import { showAddCategoryModal } from "../../modal/modals";
 
 type CategoriesProps = {
   categories: Category[];
