@@ -5,7 +5,7 @@ It is very simple and very helpful.
 
 ## 🚀 Launch!
 ```
-git clone 
+git clone https://github.com/vladislavkn/to-do-done.git
 cd to-do-done
 yarn
 yarn start
