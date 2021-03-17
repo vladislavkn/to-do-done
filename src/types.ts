@@ -1,6 +1,14 @@
 import { icons } from "@/common/icons";
+import routes from "@/router/routes";
+import React from "react";
 
 export type IconName = keyof typeof icons;
+
+export type RouteName = keyof typeof routes;
+
+export type RoutesConfig = {
+  [key: string]: React.FC;
+};
 
 export type StringKeyedObject = {
   [key: string]: any;
@@ -25,9 +33,6 @@ export type Todo = {
 /* State */
 
 export type State = {
-  screen: string;
-  navigate: (screen: string) => void;
-
   todos: Todo[];
   updateTodo: (todo: Todo) => void;
   removeTodo: (todo: Todo) => void;
@@ -40,6 +45,13 @@ export type State = {
   removeCategory: (category: Category) => void;
   selectedCategoryId: string | boolean;
   setSelectedCategoryId: (category: Category) => void;
+};
+
+/* Router */
+
+export type RouterState = {
+  screen: string;
+  navigate: (screen: string) => void;
 };
 
 /* Modal */

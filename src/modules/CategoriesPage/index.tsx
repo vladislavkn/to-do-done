@@ -3,10 +3,10 @@ import { ScrollView } from "react-native";
 import Categories from "./components/Categories";
 import useStore from "@/app/store";
 import { showEditCategoryModal } from "@/modal/modals";
-import TodoList from "@/todolist/components/TodoList";
+import TodoList from "@/todolist";
 import { selectedCategorySortedTodosSelector } from "@/app/selectors";
 
-const CategorizedTodosPage = () => {
+const CategorizedTodosPage: React.FC = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useStore((state) => [
     state.selectedCategoryId,
     state.setSelectedCategoryId,

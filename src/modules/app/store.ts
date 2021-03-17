@@ -10,7 +10,6 @@ const useStore = create<State>(
   persist(
     (set) => ({
       todos: [],
-      screen: "",
       categories: [],
       selectedCategoryId: false,
       setSelectedCategoryId: (category) =>
@@ -31,7 +30,6 @@ const useStore = create<State>(
         set((state) => ({
           todos: state.todos.filter((t) => !fn(t)),
         })),
-      navigate: (screen) => set(() => ({ screen })),
       addCategory: (name) =>
         set((state) => {
           const newCategory = { name, id: generateId() };

@@ -5,10 +5,9 @@ import React from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 
 import Navigation from "./components/Navigation";
-import RouterView from "./components/RouterView";
+import RouterView from "@/router";
 import ModalWrapper from "@/modal";
 import Menu from "./components/Menu";
-import routes, { initialRoute } from "./routes";
 import useFontsLoad from "./hooks/useFontsLoad";
 
 export default function App() {
@@ -20,7 +19,7 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar style="dark" />
       <Navigation />
-      <RouterView routes={routes} initial={initialRoute} />
+      <RouterView />
       <ModalWrapper />
       <Menu />
     </View>
