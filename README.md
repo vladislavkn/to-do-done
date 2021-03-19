@@ -6,10 +6,12 @@ It is very simple and very helpful.
 ## 🚀 Launch!
 ```
 git clone https://github.com/vladislavkn/to-do-done.git
+git clone
 cd to-do-done
 yarn
 yarn start
 ```
+
 ## 📸 Screenshots
 
 Create plans | Update tasks | Edit categories | Create new lists
