@@ -7,12 +7,12 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-import useStore from "../store";
-import { showAddTodoModal } from "../modals";
-import Icon from "./Icon";
+import Icon from "@/common/components/Icon";
+import { showAddTodoModal } from "@/modal/modals";
+import useRouterState from "@/router/store";
 
 const Menu = () => {
-  const [navigate, screen] = useStore((state) => [
+  const [navigate, screen] = useRouterState((state) => [
     state.navigate,
     state.screen,
   ]);

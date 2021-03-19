@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import useStore from "../store";
-import { Todo } from "../types";
-import { showEditTodoModal } from "../modals";
-import TodoListItem from "./TodoListItem";
+import useStore from "@/app/store";
+import { Todo } from "@src/types";
+import { showEditTodoModal } from "@/modal/modals";
+import TodoListItem from "./components/TodoListItem";
 
 type TodoListProps = {
   todos: Todo[];

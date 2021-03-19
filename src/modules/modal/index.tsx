@@ -1,7 +1,7 @@
 import React from "react";
-import { useModalStore } from "../store/modal";
-import { hasModalsSelector } from "../store/selectors";
-import Modal from "./Modal";
+import { useModalStore } from "./store";
+import Modal from "./components/Modal";
+import { hasModalsSelector } from "./selectors";
 
 const ModalWrapper = () => {
   const hasModals = useModalStore(hasModalsSelector);

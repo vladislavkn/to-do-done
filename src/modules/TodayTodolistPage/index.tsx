@@ -1,10 +1,10 @@
 import React from "react";
 import { ScrollView } from "react-native";
-import TodoList from "../components/TodoList";
-import useStore from "../store";
-import { sortedTodayTodosSelector } from "../store/selectors";
+import useStore from "@/app/store";
+import { sortedTodayTodosSelector } from "@/app/selectors";
+import TodoList from "@/todolist";
 
-const TodayTodoListPage = () => {
+const TodayTodoListPage: React.FC = () => {
   const todos = useStore(sortedTodayTodosSelector);
 
   return (

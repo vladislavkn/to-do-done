@@ -1,16 +1,15 @@
 import create from "zustand";
-import { State, Todo } from "../types";
-import { generateId } from "../utils";
+import { State, Todo } from "@src/types";
+import { generateId } from "@src/utils";
 import { persist } from "zustand/middleware";
 
-import config from "../../app.json";
+import config from "@src/../app.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useStore = create<State>(
   persist(
     (set) => ({
       todos: [],
-      screen: "",
       categories: [],
       selectedCategoryId: false,
       setSelectedCategoryId: (category) =>
@@ -31,7 +30,6 @@ const useStore = create<State>(
         set((state) => ({
           todos: state.todos.filter((t) => !fn(t)),
         })),
-      navigate: (screen) => set(() => ({ screen })),
       addCategory: (name) =>
         set((state) => {
           const newCategory = { name, id: generateId() };

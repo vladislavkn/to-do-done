@@ -7,6 +7,10 @@
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/modules/*"],
+      "@src/*": ["./src/*"]
+    }
   }
 }

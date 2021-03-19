@@ -1,6 +1,14 @@
-import { icons } from "./icons";
+import { icons } from "@/common/icons";
+import routes from "@/router/routes";
+import React from "react";
 
 export type IconName = keyof typeof icons;
+
+export type RouteName = keyof typeof routes;
+
+export type RoutesConfig = {
+  [key: string]: React.FC;
+};
 
 export type StringKeyedObject = {
   [key: string]: any;
@@ -25,9 +33,6 @@ export type Todo = {
 /* State */
 
 export type State = {
-  screen: string;
-  navigate: (screen: string) => void;
-
   todos: Todo[];
   updateTodo: (todo: Todo) => void;
   removeTodo: (todo: Todo) => void;
@@ -40,6 +45,13 @@ export type State = {
   removeCategory: (category: Category) => void;
   selectedCategoryId: string | boolean;
   setSelectedCategoryId: (category: Category) => void;
+};
+
+/* Router */
+
+export type RouterState = {
+  screen: string;
+  navigate: (screen: string) => void;
 };
 
 /* Modal */
@@ -62,20 +74,26 @@ export type ModalValue = Partial<ModalTextValue | ModalTimeValue>;
 
 export type ModalCallback = (
   modal: Modal,
-  update: ModalState["update"]
+  update: ModalState["update"],
+  group: ModalButtonGroup
 ) => void;
+
+export type ModalSubmit = (modal: Modal, update: ModalState["update"]) => void;
+
+export type ModalButton = {
+  text: string;
+  iconProps?: {
+    name: IconName;
+    [key: string]: any;
+  };
+  onPress: ModalCallback;
+};
 
 export type ModalButtonGroup = {
   selectable: boolean;
+  name: string;
   selected?: string;
-  buttons: {
-    text: string;
-    iconProps?: {
-      name: IconName;
-      [key: string]: any;
-    };
-    onPress: ModalCallback;
-  }[];
+  buttons: ModalButton[];
 };
 
 export type ModalInputType = "text" | "time" | "none";
@@ -86,7 +104,7 @@ export type Modal = {
   buttonGroups: ModalButtonGroup[];
   inputType: ModalInputType;
   autoFocus: boolean;
-  submit?: ModalCallback;
+  submit?: ModalSubmit;
   placeholder: string;
 };
 

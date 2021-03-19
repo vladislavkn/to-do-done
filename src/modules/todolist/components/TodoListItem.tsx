@@ -6,8 +6,8 @@ import {
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
 } from "react-native";
-import { Todo } from "../types";
-import Icon from "./Icon";
+import { Todo } from "@src/types";
+import Icon from "@/common/components/Icon";
 
 interface TodoListItemProps {
   onChange: () => void;
