@@ -3,7 +3,10 @@
 To-Do-Done is expo (react-native) mobile app for making day plans and store things you need to do.
 It is very simple and very helpful. 
 
-## 🚀 Launch!
+## 📱 Available in Google Play
+Follow the link: https://play.google.com/store/apps/details?id=tododone.app
+
+## 🚀 Setup & Launch
 ```
 git clone https://github.com/vladislavkn/to-do-done.git 
 cd to-do-done
